@@ -1,15 +1,64 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Hello from '@/components/Hello';
+
+import LayoutMain from '@/components/LayoutMain';
+import LayoutPlain from '@/components/LayoutPlain';
+
+import PageDashboard from '@/components/PageDashboard';
+import PageSettings from '@/components/PageSettings';
+import PageLogin from '@/components/PageLogin';
+import PageSignUp from '@/components/PageSignUp';
+import ErrorForbidden from '@/components/ErrorForbidden';
+import ErrorNotFound from '@/components/ErrorNotFound';
 
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello,
+      component: LayoutMain,
+      children: [
+        {
+          path: '',
+          component: PageDashboard,
+        },
+        {
+          path: 'settings',
+          component: PageSettings,
+        },
+      ],
+    },
+    {
+      path: 'auth',
+      component: LayoutPlain,
+      children: [
+        {
+          path: 'login',
+          component: PageLogin,
+        },
+        {
+          path: 'signup',
+          component: PageSignUp,
+        },
+      ],
+    },
+    {
+      path: 'error',
+      component: LayoutPlain,
+      children: [
+        {
+          path: '404',
+          name: 'NotFound',
+          component: ErrorNotFound,
+        },
+        {
+          path: '403',
+          name: 'Forbidden',
+          component: ErrorForbidden,
+        },
+      ],
     },
   ],
 });
