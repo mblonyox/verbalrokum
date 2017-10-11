@@ -25,7 +25,11 @@ module.exports = {
   // add your custom rules here
   'rules': {
     // disable linebreak-style linting
-    'linebreak-style': 0,
+    'linebreak-style': "off",
+    // exclue state of vuex for no-shadow rule
+    "no-shadow": ["error", {"allow": ["state"]}],
+    // exclude properties reassign
+    "no-param-reassign": ["error", {"props": false}],
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
       'js': 'never',

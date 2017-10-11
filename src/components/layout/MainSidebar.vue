@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app>
+  <v-navigation-drawer persistent clipped app v-model="sidebar">
     <v-toolbar flat>
       <v-list>
         <v-list-tile avatar>
@@ -14,3 +14,18 @@
     </v-toolbar>
   </v-navigation-drawer>
 </template>
+
+<script>
+export default {
+  computed: {
+    sidebar: {
+      get() {
+        return this.$store.state.app.sidebar;
+      },
+      set(val) {
+        this.$store.commit('setSidebar', val);
+      },
+    },
+  },
+};
+</script>
