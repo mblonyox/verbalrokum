@@ -1,0 +1,48 @@
+<template>
+  <div id="spinner-container" v-show="loading">
+    <any-loader size="5em" />
+  </div>
+</template>
+
+<script>
+import AnyLoader from 'vue-spinner/src/FadeLoader';
+
+export default {
+  computed: {
+    loading() {
+      return this.$store.state.app.loading;
+    },
+  },
+  components: {
+    AnyLoader,
+  },
+};
+</script>
+
+<style>
+/* Absolute Center Spinner */
+#spinner-container {
+  position: fixed;
+  z-index: 999;
+  height: 5em;
+  width: 5em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+/* Transparent Overlay */
+#spinner-container:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,0.5);
+}
+</style>
+

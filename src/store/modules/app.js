@@ -4,6 +4,7 @@ const state = {
     isTablet: false,
   },
   sidebar: false,
+  loading: false,
 };
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
   },
   setSidebar(state, sidebar) {
     state.sidebar = sidebar;
+  },
+  setLoading(state, loading) {
+    state.loading = loading;
   },
 };
 

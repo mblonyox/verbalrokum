@@ -13,12 +13,13 @@ import ErrorNotFound from '@/components/ErrorNotFound';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       component: LayoutMain,
+      meta: { requiresAuth: true },
       children: [
         {
           path: '',
@@ -31,7 +32,7 @@ export default new Router({
       ],
     },
     {
-      path: 'auth',
+      path: '/auth',
       component: LayoutPlain,
       children: [
         {
@@ -45,7 +46,7 @@ export default new Router({
       ],
     },
     {
-      path: 'error',
+      path: '/error',
       component: LayoutPlain,
       children: [
         {
@@ -60,5 +61,11 @@ export default new Router({
         },
       ],
     },
+    {
+      path: '*',
+      redirect: { name: 'NotFound' },
+    },
   ],
 });
+
+export default router;
