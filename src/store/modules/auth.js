@@ -7,7 +7,7 @@ const state = {
     email: null,
     displayName: null,
     photoURL: null,
-    roles: [],
+    roles: {},
     lastLogin: null,
   },
   loggedIn: false,
@@ -16,17 +16,20 @@ const state = {
 
 const mutations = {
   setUser(state, user) {
-    if (user) {
-      state.user.uid = user.uid;
-      state.user.email = user.email;
-      state.user.displayName = user.displayName;
-      state.user.photoURL = user.photoURL;
-    } else {
-      state.user.uid = null;
-      state.user.email = null;
-      state.user.displayName = null;
-      state.user.photoURL = null;
-    }
+    state.user.uid = user.uid;
+    state.user.email = user.email;
+    state.user.displayName = user.displayName;
+    state.user.photoURL = user.photoURL;
+    state.user.roles = user.roles;
+    state.user.lastLogin = user.lastLogin;
+  },
+  unsetUser(state) {
+    state.user.uid = null;
+    state.user.email = null;
+    state.user.displayName = null;
+    state.user.photoURL = null;
+    state.user.roles = {};
+    state.user.lastLogin = null;
   },
   setLoggedIn(state, isLoggedIn) {
     state.loggedIn = isLoggedIn;
@@ -42,8 +45,6 @@ const actions = {
     firebase.auth()
       .signInWithEmailAndPassword(credential.email, credential.password)
       .catch((error) => {
-        // eslint-disable-next-line
-        console.error(error);
         commit('setError', error);
         commit('setLoading', false);
       });
@@ -56,10 +57,18 @@ const actions = {
     });
   },
   authChanged({ commit }, user) {
-    commit('setUser', user);
-    commit('setUser', !!user);
+    commit('setLoggedIn', !!user);
     commit('setLoading', false);
-    router.push('/');
+    if (!user) {
+      commit('unsetUser');
+      router.push('/auth/login');
+    } else {
+      firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
+        const userdata = snap.val();
+        commit('setUser', { ...userdata, ...user });
+        router.push('/');
+      });
+    }
   },
 };
 

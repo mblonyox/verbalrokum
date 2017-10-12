@@ -28,15 +28,15 @@
       <v-card>
         <v-card-title primary-title>
           <v-avatar>
-            <v-icon>account_circle</v-icon>
+            <img :src="user.photoURL" alt="profile-photo">
           </v-avatar>
           <div>
-            <span class="title">Username</span><br>
-            <span class="subheading">email</span>
+            <span class="title">{{user.displayName}}</span><br>
+            <span class="subheading">{{user.email}}</span>
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn>Log out</v-btn>
+          <v-btn @click.stop="doLogout">Log out</v-btn>
         </v-card-actions>
       </v-card>
     </v-menu>
@@ -45,12 +45,17 @@
 
 <script>
 export default {
+  computed: {
+    user() {
+      return this.$store.state.auth.user;
+    },
+  },
   methods: {
     toggleSidebar() {
       this.$store.dispatch('toggleSidebar');
     },
     doLogout() {
-      this.$store.dispatch('doLogut');
+      this.$store.dispatch('logout');
     },
   },
 };

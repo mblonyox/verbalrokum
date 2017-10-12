@@ -15,12 +15,8 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!store.state.auth.loggedIn) {
-      next('/auth/login');
-    } else {
-      next();
-    }
+  if (to.matched.some(record => record.meta.requiresAuth) && !store.state.auth.loggedIn) {
+    next('/auth/login');
   } else {
     next();
   }
