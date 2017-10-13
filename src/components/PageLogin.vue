@@ -9,6 +9,9 @@
         <v-container fluid grid-list-lg>
           <v-layout row>
             <v-flex xs12>
+              <v-alert color="error" icon="error" dismissible v-model="error">
+                {{ error ? error.message : '' }}
+              </v-alert>
               <v-form 
                 v-model="valid"
                 ref="form"
@@ -58,6 +61,18 @@ export default {
         v => v.length > 8 || 'Password must be more than 8 character',
       ],
     };
+  },
+  computed: {
+    error: {
+      get() {
+        return this.$store.state.auth.error;
+      },
+      set(v) {
+        if (!v) {
+          this.$store.commit('setError', v);
+        }
+      },
+    },
   },
   methods: {
     submit() {

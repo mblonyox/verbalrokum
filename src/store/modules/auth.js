@@ -58,15 +58,16 @@ const actions = {
   },
   authChanged({ commit }, user) {
     commit('setLoggedIn', !!user);
-    commit('setLoading', false);
     if (!user) {
       commit('unsetUser');
       router.push('/auth/login');
+      commit('setLoading', false);
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
         commit('setUser', { ...userdata, ...user });
         router.push('/');
+        commit('setLoading', false);
       });
     }
   },
