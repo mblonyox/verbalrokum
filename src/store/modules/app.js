@@ -8,9 +8,10 @@ const state = {
   menus: [
     { title: 'Dashboard', icon: 'dashboard', route: '/' },
     'divider',
-    { title: 'Verbal aktif', icon: 'assignment', route: '/verbal' },
-    { title: 'Verbal selesai', icon: 'assignment_turned_in', route: '/selesai' },
-    { title: 'Arsip verbal', icon: 'assignment_returned', route: '/arsip' },
+    { title: 'Rekam verbal', icon: 'add', route: '/verbal/rekam' },
+    { title: 'Verbal', icon: 'assignment', route: '/verbal/all' },
+    { title: 'Verbal selesai', icon: 'assignment_turned_in', route: '/verbal/selesai' },
+    { title: 'Arsip verbal', icon: 'assignment_returned', route: '/verbal/arsip' },
     'divider',
     { title: 'Laporan', icon: 'book', route: '/laporan' },
     { title: 'Statistik', icon: 'trending_up', route: '/statistik' },

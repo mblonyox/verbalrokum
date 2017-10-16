@@ -3,7 +3,7 @@
     <v-list class="pt-0">
       <template v-for="item in menus">
         <v-divider v-if="item === 'divider'" />
-        <v-list-tile v-else>
+        <v-list-tile :to="item.route" exact v-else>
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
