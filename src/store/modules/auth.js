@@ -56,7 +56,7 @@ const actions = {
       commit('setLoading', false);
     });
   },
-  authChanged({ commit }, user) {
+  authChanged({ commit, dispatch }, user) {
     commit('setLoggedIn', !!user);
     if (!user) {
       commit('unsetUser');
@@ -68,6 +68,7 @@ const actions = {
         commit('setUser', { ...userdata, ...user });
         router.push('/');
         commit('setLoading', false);
+        dispatch('initBagianPegawai');
       });
     }
   },

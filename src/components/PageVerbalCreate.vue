@@ -26,7 +26,7 @@
               label="Bagian"
               prepend-icon="domain"
               v-model="form.bagian"
-              :items="bagians"
+              :items="bagian"
             />
             <v-text-field
               label="Nomor Nota Dinas Bagian"
@@ -43,6 +43,8 @@
               prepend-icon="person"
               v-model="form.konseptor"
               :items="pegawai"
+              item-text="NamaLengkap"
+              item-value="IDPegawai"
               autocomplete
             />
             <v-select
@@ -72,8 +74,6 @@
 </template>
 
 <script>
-import firebase from 'firebase';
-
 export default {
   data() {
     return {
@@ -89,8 +89,6 @@ export default {
         verbBagian: '',
       },
       datepicker: false,
-      bagians: [],
-      pegawai: [],
     };
   },
   methods: {
@@ -98,12 +96,17 @@ export default {
       this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.uid });
     },
   },
+  computed: {
+    bagian() {
+      return this.$store.state.verbal.bagian;
+    },
+    pegawai() {
+      return this.$store.state.verbal.pegawai;
+    },
+  },
   mounted() {
     const d = new Date();
     this.form.tanggal = d.toISOString().substr(0, 10);
-    firebase.database().ref('/bagians').once('value', (snap) => {
-      this.bagians = snap.val();
-    });
   },
 };
 </script>

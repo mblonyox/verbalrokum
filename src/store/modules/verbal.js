@@ -4,9 +4,20 @@ import router from '../../router';
 
 const state = {
   verbals: [],
+  bagian: [],
+  pegawai: [],
 };
 
 const mutations = {
+  setBagian(state, bagian) {
+    state.bagian = bagian;
+  },
+  addPegawai(state, pegawai) {
+    state.pegawai.push(pegawai);
+  },
+  clearPegawai(state) {
+    state.pegawai = [];
+  },
 };
 
 const actions = {
@@ -24,6 +35,22 @@ const actions = {
     const verbalRef = firebase.database().ref('/verbals');
     commit('setLoading', true);
     dispatch('setVerbalRef', verbalRef);
+  },
+  initBagianPegawai({ state, commit }) {
+    if (state.pegawai.length && state.bagian.length) return;
+    commit('setLoading', true);
+    const refBagian = firebase.database().ref('/bagians').once('value').then((snap) => {
+      commit('setBagian', snap.val());
+    });
+    const refPegawai = firebase.database().ref('/pegawai').once('value').then((snap) => {
+      commit('clearPegawai');
+      snap.forEach((peg) => {
+        commit('addPegawai', peg.val());
+      });
+    });
+    Promise.all([refBagian, refPegawai]).then(() => {
+      commit('setLoading', false);
+    });
   },
 };
 
