@@ -23,8 +23,23 @@ const mutations = {
 const actions = {
   saveNewVerbal({ commit }, newVerbal) {
     const verbalRef = firebase.database().ref('/verbals');
+    const agendaRef = firebase.database().ref('/agenda');
+    const currentYear = (new Date()).getFullYear();
     commit('setLoading', true);
-    verbalRef.push(newVerbal, (err) => { commit('setLoading', false); if (!err) router.push('/verbal'); });
+    verbalRef.push(newVerbal)
+      .then((newRef) => {
+        agendaRef.child(currentYear).transaction((ag) => {
+          const agenda = ag || { lastVal: 0 };
+          agenda.lastVal += 1;
+          agenda[agenda.lastVal] = newRef.key;
+          return agenda;
+        })
+        .then((result) => {
+          if (result.committed) newRef.child('nomorAgenda').set(`${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`);
+          commit('setLoading', false);
+          router.push('/verbal/all');
+        });
+      });
   },
   setVerbalRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
     bindFirebaseRef('verbals', ref, {

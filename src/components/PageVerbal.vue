@@ -21,11 +21,12 @@
         :items="verbals"
       >
         <template slot="items" scope="props">
-          <td>{{ props.item['.key'] }}</td>
+          <td>{{ props.item.nomorAgenda }}</td>
           <td>{{ props.item.tanggal }}</td>
-          <td>{{ props.item.konseptor }}</td>
+          <td>{{ props.item.bagian }}</td>
+          <td>{{ idToPegawai(props.item.konseptor).NamaLengkap }}</td>
           <td>{{ props.item.perihal }}</td>
-          <td>{{ props.item.lampiran }}</td>
+          <td>{{ props.item.status }}</td>
         </template>
       </v-data-table>
     </v-card>
@@ -39,18 +40,26 @@ export default {
       search: '',
       selected: [],
       headers: [
-        { text: 'No Agenda', value: 'agenda' },
-        { text: 'Tanggal', value: 'tanggal' },
-        { text: 'Konseptor', value: 'konseptor' },
-        { text: 'Perihal', value: 'perihal', align: 'left', sortable: false },
-        { text: 'Lampiran', value: 'lampiran', align: 'left', sortable: false },
-        { text: 'Status', value: 'status', align: 'left', sortable: false },
+        { text: 'No Agenda', value: 'agenda', align: 'center' },
+        { text: 'Tanggal', value: 'tanggal', align: 'center' },
+        { text: 'Bagian', value: 'bagian', align: 'center' },
+        { text: 'Konseptor', value: 'konseptor', align: 'center' },
+        { text: 'Perihal', value: 'perihal', align: 'center', sortable: false },
+        { text: 'Status', value: 'status', align: 'center', sortable: false },
       ],
     };
   },
   computed: {
     verbals() {
       return this.$store.state.verbal.verbals;
+    },
+    pegawai() {
+      return this.$store.state.verbal.pegawai;
+    },
+  },
+  methods: {
+    idToPegawai(id) {
+      return this.pegawai.find(e => e.IDPegawai === id);
     },
   },
   created() {
