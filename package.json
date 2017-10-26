@@ -17,6 +17,7 @@
     "vue-spinner": "^1.0.3",
     "vuetify": "^0.16.5",
     "vuex": "^2.4.1",
+    "vuex-persistedstate": "^2.0.0",
     "vuexfire": "^2.3.0"
   },
   "devDependencies": {

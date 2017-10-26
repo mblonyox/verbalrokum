@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { firebaseMutations } from 'vuexfire';
+import createPersistedState from 'vuex-persistedstate';
 
 import auth from './modules/auth';
 import app from './modules/app';
@@ -17,4 +18,5 @@ export default new Vuex.Store({
   mutations: {
     ...firebaseMutations,
   },
+  plugins: [createPersistedState()],
 });

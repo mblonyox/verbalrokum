@@ -56,17 +56,22 @@ const actions = {
       commit('setLoading', false);
     });
   },
-  authChanged({ commit, dispatch }, user) {
-    commit('setLoggedIn', !!user);
+  authChanged({ state, commit, dispatch }, user) {
     if (!user) {
       commit('unsetUser');
-      router.push('/auth/login');
+      if (state.loggedIn) {
+        commit('setLoggedIn', false);
+        router.push('/auth/login');
+      }
       commit('setLoading', false);
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
         commit('setUser', { ...userdata, ...user });
-        router.push('/');
+        if (!state.loggedIn) {
+          commit('setLoggedIn', true);
+          router.push('/');
+        }
         commit('setLoading', false);
         dispatch('initBagianPegawai');
       });
