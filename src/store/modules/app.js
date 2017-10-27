@@ -4,7 +4,7 @@ const state = {
     isTablet: false,
   },
   sidebar: false,
-  loading: false,
+  queue: 0,
   menus: [
     { title: 'Dashboard', icon: 'dashboard', route: '/' },
     'divider',
@@ -30,8 +30,20 @@ const mutations = {
   setSidebar(state, sidebar) {
     state.sidebar = sidebar;
   },
-  setLoading(state, loading) {
-    state.loading = loading;
+  addQueue(state) {
+    state.queue += 1;
+  },
+  removeQueue(state) {
+    if (state.queue > 0) state.queue -= 1;
+  },
+  resetQueue(state) {
+    state.queue = 0;
+  },
+};
+
+const getters = {
+  isLoading(state) {
+    return state.queue > 0;
   },
 };
 
@@ -43,6 +55,7 @@ const actions = {
 
 export default {
   state,
+  getters,
   mutations,
   actions,
 };

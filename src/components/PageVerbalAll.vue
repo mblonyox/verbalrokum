@@ -26,7 +26,7 @@
           <td>{{ props.item.bagian }}</td>
           <td>{{ idToPegawai(props.item.konseptor).NamaLengkap }}</td>
           <td>{{ props.item.perihal }}</td>
-          <td>{{ props.item.status }}</td>
+          <td><v-chip :color="props.item.status.color || '-'" text-color="white">{{ props.item.status.text }}</v-chip></td>
         </template>
       </v-data-table>
     </v-card>
@@ -40,7 +40,7 @@ export default {
       search: '',
       selected: [],
       headers: [
-        { text: 'No Agenda', value: 'agenda', align: 'center' },
+        { text: 'No Agenda', value: 'nomorAgenda', align: 'center' },
         { text: 'Tanggal', value: 'tanggal', align: 'center' },
         { text: 'Bagian', value: 'bagian', align: 'center' },
         { text: 'Konseptor', value: 'konseptor', align: 'center' },
@@ -61,9 +61,6 @@ export default {
     idToPegawai(id) {
       return this.pegawai.find(e => e.IDPegawai === id);
     },
-  },
-  created() {
-    this.$store.dispatch('initVerbalRef');
   },
 };
 </script>

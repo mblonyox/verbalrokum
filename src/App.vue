@@ -12,6 +12,12 @@ export default {
   components: {
     AppSpinner,
   },
+  created() {
+    this.$store.commit('resetQueue');
+    this.$store.dispatch('initTujuanRef');
+    this.$store.dispatch('initVerbalRef');
+    this.$store.dispatch('initBagianPegawai');
+  },
 };
 </script>
 

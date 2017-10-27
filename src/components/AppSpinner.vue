@@ -10,7 +10,7 @@ import AnyLoader from 'vue-spinner/src/FadeLoader';
 export default {
   computed: {
     loading() {
-      return this.$store.state.app.loading;
+      return this.$store.getters.isLoading;
     },
   },
   components: {

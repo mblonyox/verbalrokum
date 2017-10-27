@@ -28,16 +28,22 @@
               v-model="form.bagian"
               :items="bagian"
             />
-            <v-text-field
-              label="Nomor Nota Dinas Bagian"
-              prepend-icon="description"
-              v-model="form.notaBagian"
-            />
-            <v-text-field
-              label="Nomor Verbal Bagian"
-              prepend-icon="receipt"
-              v-model="form.verbBagian"
-            />
+            <v-layout row>
+              <v-flex xs5>
+                <v-text-field
+                  label="Nomor Nota Dinas Bagian"
+                  prepend-icon="description"
+                  v-model="form.notaBagian"
+                />
+              </v-flex>
+              <v-flex xs6 offset-xs1>
+                <v-text-field
+                  label="Nomor Verbal Bagian"
+                  prepend-icon="receipt"
+                  v-model="form.verbBagian"
+                />
+              </v-flex>
+            </v-layout>
             <v-select
               label="Konseptor"
               prepend-icon="person"
@@ -47,10 +53,43 @@
               item-value="IDPegawai"
               autocomplete
             />
+            <v-divider/>
+            <v-list>
+              <v-subheader>Konsep Naskah</v-subheader>
+              <v-list-tile v-for="item in form.naskah" :key="item.key">
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="item.jenis"/>
+                  <v-list-tile-sub-title v-html="item.tujuan.join(', ')"/>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+            <v-layout>
+              <v-flex xs2 offset-xs1>
+                <v-select
+                  label="Jenis Naskah"
+                  v-model="naskahInput.jenis"
+                  :items="jenis"
+                />
+              </v-flex>
+              <v-flex xs6 offset-xs1>
+                <v-select
+                  label="Tujuan"
+                  v-model="naskahInput.tujuan"
+                  :items="tujuan"
+                  tags
+                  multiple
+                  @change="checkTujuan"
+                />
+              </v-flex>
+              <v-flex xs2>
+                <v-btn @click="addNaskah">Tambah</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-divider/>
             <v-select
-              label="Jenis Naskah"
-              prepend-icon="layers"
-              v-model="form.jenis"
+              label="Tag Label"
+              prepend-icon="local_offer"
+              v-model="form.label"
               tags
               chips
             />
@@ -81,17 +120,44 @@ export default {
       form: {
         tanggal: null,
         perihal: '',
-        jenis: [],
+        naskah: [],
+        label: [],
         lampiran: '',
         konseptor: '',
         bagian: '',
         notaBagian: '',
         verbBagian: '',
       },
+      naskahInput: {
+        jenis: '',
+        tujuan: [],
+      },
       datepicker: false,
+      jenis: [
+        'Nota Dinas',
+        'Surat',
+        'Undangan',
+        'Surat Tugas',
+        'Nota Dinas Rahasia',
+        'Surat Rahasia',
+      ],
     };
   },
   methods: {
+    addNaskah() {
+      this.form.naskah.push(this.naskahInput);
+      this.naskahInput = {
+        jenis: '',
+        tujuan: [],
+      };
+    },
+    checkTujuan(data) {
+      data.forEach((e) => {
+        if (!this.tujuan.includes(e)) {
+          this.$store.dispatch('addTujuan', e);
+        }
+      });
+    },
     save() {
       this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.uid });
     },
@@ -102,6 +168,9 @@ export default {
     },
     pegawai() {
       return this.$store.state.verbal.pegawai;
+    },
+    tujuan() {
+      return this.$store.state.verbal.tujuan.map(e => e['.value']);
     },
   },
   mounted() {

@@ -41,29 +41,37 @@ const mutations = {
 
 const actions = {
   loginWithEmail({ commit }, credential) {
-    commit('setLoading', true);
+    commit('addQueue');
     firebase.auth()
       .signInWithEmailAndPassword(credential.email, credential.password)
+      .then(() => {
+        commit('removeQueue');
+      })
       .catch((error) => {
         commit('setError', error);
-        commit('setLoading', false);
+        commit('removeQueue');
       });
   },
   logout({ commit }) {
-    commit('setLoading', true);
-    firebase.auth().signOut().catch((error) => {
-      commit('setError', error);
-      commit('setLoading', false);
-    });
+    commit('addQueue');
+    firebase.auth().signOut()
+      .then(() => {
+        commit('removeQueue');
+      })
+      .catch((error) => {
+        commit('setError', error);
+        commit('removeQueue');
+      });
   },
-  authChanged({ state, commit, dispatch }, user) {
+  authChanged({ state, commit }, user) {
+    commit('addQueue');
     if (!user) {
       commit('unsetUser');
       if (state.loggedIn) {
         commit('setLoggedIn', false);
         router.push('/auth/login');
       }
-      commit('setLoading', false);
+      commit('removeQueue');
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
@@ -72,8 +80,7 @@ const actions = {
           commit('setLoggedIn', true);
           router.push('/');
         }
-        commit('setLoading', false);
-        dispatch('initBagianPegawai');
+        commit('removeQueue');
       });
     }
   },
