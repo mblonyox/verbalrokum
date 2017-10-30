@@ -63,7 +63,7 @@ const actions = {
         commit('removeQueue');
       });
   },
-  authChanged({ state, commit }, user) {
+  authChanged({ state, commit, dispatch }, user) {
     commit('addQueue');
     if (!user) {
       commit('unsetUser');
@@ -80,6 +80,9 @@ const actions = {
           commit('setLoggedIn', true);
           router.push('/');
         }
+        dispatch('initTujuanRef');
+        dispatch('initVerbalRef');
+        dispatch('initBagianPegawai');
         commit('removeQueue');
       });
     }

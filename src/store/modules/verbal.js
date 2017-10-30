@@ -44,11 +44,11 @@ const actions = {
         });
       });
   },
-  updateVerbalStatus({ commit, rootState }, verbalUid, newStatus) {
+  updateVerbalStatus({ commit, rootState }, newStatus) {
     commit('addQueue');
-    const verbalRef = firebase.database().ref('/verbals').child(verbalUid);
+    const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.child('status').set({ text: newStatus.text, color: newStatus.color });
-    const logPromise = verbalRef.child('log').push({ text: newStatus.logtext, time: Date.now(), user: rootState.auth.user.uid });
+    const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.uid });
     Promise.all([statusPromise, logPromise]).then(() => {
       commit('removeQueue');
     });

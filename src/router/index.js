@@ -5,6 +5,7 @@ import LayoutMain from '@/components/LayoutMain';
 import LayoutPlain from '@/components/LayoutPlain';
 
 import PageDashboard from '@/components/PageDashboard';
+import PageVerbal from '@/components/PageVerbal';
 import PageVerbalAll from '@/components/PageVerbalAll';
 import PageVerbalCreate from '@/components/PageVerbalCreate';
 import PageSettings from '@/components/PageSettings';
@@ -34,6 +35,10 @@ const router = new Router({
         {
           path: 'verbal/rekam',
           component: PageVerbalCreate,
+        },
+        {
+          path: 'verbal/:id',
+          component: PageVerbal,
         },
         {
           path: 'settings',
