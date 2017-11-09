@@ -2,16 +2,10 @@
   <v-toolbar app fixed clipped-left dark color="light-blue">
     <v-toolbar-title 
       class="white--text ml-0 pl-3"
-      style="width:300px;"
     >
       <v-toolbar-side-icon @click.stop="toggleSidebar"/>
       Verbal Rokum
     </v-toolbar-title>
-    <v-text-field
-      solo
-      prepend-icon="search"
-      placeholder="Search"
-    />
     <v-spacer/>
     <v-btn icon>
       <v-icon>apps</v-icon>

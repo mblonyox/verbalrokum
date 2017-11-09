@@ -54,6 +54,21 @@
               label="Catatan"
               v-model="dialog.note"
             />
+            <template v-if="dialog.status && dialog.status.text === 'Arsipkan'">
+              <v-divider/>
+              Penomoran Naskah Dinas: 
+              <v-layout row v-for="naskah in dialog.item.naskah" :key="naskah.key">
+                <v-flex xs4>
+                  <v-subheader>{{ naskah.jenis }}</v-subheader>
+                  {{ naskah.tujuan.join(', ') }}
+                </v-flex>
+                <v-flex xs>
+                  <v-text-field
+                    v-model="naskah.nomor"
+                  />
+                </v-flex>
+              </v-layout>
+            </template>
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
@@ -94,13 +109,13 @@ export default {
         { text: 'Ajukan', color: 'blue', logText: 'Verbal diajukan ke Kepala Biro' },
         { text: 'Setuju', color: 'green', logText: 'Verbal disetujui Kepala Biro' },
         { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh Kepala Biro' },
-        { text: 'Arsipkan', color: 'blue-grey', logText: 'Verbal diarsipkan' },
+        { text: 'Arsipkan', color: 'grey', logText: 'Verbal diarsipkan' },
       ],
     };
   },
   computed: {
     verbals() {
-      return this.$store.state.verbal.verbals.sort((a, b) => a['.key'] < b['.key']);
+      return this.$store.state.verbal.verbals.slice().reverse();
     },
     pegawai() {
       return this.$store.state.verbal.pegawai;
@@ -117,9 +132,11 @@ export default {
     closeDialog() {
       this.dialog.item = {};
       this.dialog.display = false;
+      this.dialog.status = null;
+      this.dialog.note = '';
     },
     updateVerbal() {
-      const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note };
+      const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note, naskah: this.dialog.item.naskah };
       this.$store.dispatch('updateVerbalStatus', newStatus);
       this.closeDialog();
     },

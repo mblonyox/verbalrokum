@@ -49,7 +49,8 @@ const actions = {
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.child('status').set({ text: newStatus.text, color: newStatus.color });
     const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.uid });
-    Promise.all([statusPromise, logPromise]).then(() => {
+    const naskahPromise = verbalRef.child('naskah').set(newStatus.naskah);
+    Promise.all([statusPromise, logPromise, naskahPromise]).then(() => {
       commit('removeQueue');
     });
   },
@@ -59,7 +60,7 @@ const actions = {
     });
   }),
   initVerbalRef({ commit, dispatch }) {
-    const verbalRef = firebase.database().ref('/verbals');
+    const verbalRef = firebase.database().ref('/verbals').orderByKey();
     commit('addQueue');
     dispatch('setVerbalRef', verbalRef);
   },
