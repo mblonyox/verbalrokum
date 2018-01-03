@@ -59,39 +59,49 @@ const actions = {
       readyCallback: () => { commit('removeQueue'); },
     });
   }),
-  initVerbalRef({ commit, dispatch }) {
-    const verbalRef = firebase.database().ref('/verbals').orderByKey();
-    commit('addQueue');
-    dispatch('setVerbalRef', verbalRef);
-  },
+  setBagianRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
+    bindFirebaseRef('bagian', ref, {
+      readyCallback: () => { commit('removeQueue'); },
+    });
+  }),
+  setPegawaiRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
+    bindFirebaseRef('pegawai', ref, {
+      readyCallback: () => { commit('removeQueue'); },
+    });
+  }),
   setTujuanRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
     bindFirebaseRef('tujuan', ref, {
       readyCallback: () => { commit('removeQueue'); },
     });
   }),
+  initVerbalRef({ commit, dispatch }) {
+    const verbalRef = firebase.database().ref('/verbals').orderByKey();
+    commit('addQueue');
+    dispatch('setVerbalRef', verbalRef);
+  },
   initTujuanRef({ commit, dispatch }) {
     const tujuanRef = firebase.database().ref('/tujuan');
     commit('addQueue');
     dispatch('setTujuanRef', tujuanRef);
   },
+  initBagianRef({ commit, dispatch }) {
+    const bagianRef = firebase.database().ref('/bagians');
+    commit('addQueue');
+    dispatch('setBagianRef', bagianRef);
+  },
+  initPegawaiRef({ commit, dispatch }) {
+    const pegawaiRef = firebase.database().ref('/pegawai');
+    commit('addQueue');
+    dispatch('setPegawaiRef', pegawaiRef);
+  },
+  initAllRef({ dispatch }) {
+    dispatch('initVerbalRef');
+    dispatch('initTujuanRef');
+    dispatch('initBagianRef');
+    dispatch('initPegawaiRef');
+  },
   addTujuan({ commit }, tujuan) {
     firebase.database().ref('/tujuan').push(tujuan);
-  },
-  initBagianPegawai({ state, commit }) {
-    if (state.pegawai.length && state.bagian.length) return;
-    commit('addQueue');
-    const refBagian = firebase.database().ref('/bagians').once('value').then((snap) => {
-      commit('setBagian', snap.val());
-    });
-    const refPegawai = firebase.database().ref('/pegawai').once('value').then((snap) => {
-      commit('clearPegawai');
-      snap.forEach((peg) => {
-        commit('addPegawai', peg.val());
-      });
-    });
-    Promise.all([refBagian, refPegawai]).then(() => {
-      commit('removeQueue');
-    });
   },
 };
 

@@ -80,9 +80,7 @@ const actions = {
           commit('setLoggedIn', true);
           router.push('/');
         }
-        dispatch('initTujuanRef');
-        dispatch('initVerbalRef');
-        dispatch('initBagianPegawai');
+        dispatch('initAllRef');
         commit('removeQueue');
       });
     }
