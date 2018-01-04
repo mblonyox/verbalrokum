@@ -63,6 +63,7 @@
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
+            <v-alert color="warning" icon="priority_high" :value="!!error.naskah">{{ error.naskah }}</v-alert>
             <v-layout>
               <v-flex xs2 offset-xs1>
                 <v-select
@@ -90,8 +91,10 @@
               label="Tag Label"
               prepend-icon="local_offer"
               v-model="form.label"
+              :items="labels"
               tags
               chips
+              @change="checkLabel"
             />
             <v-text-field
               label="Perihal"
@@ -116,7 +119,7 @@
 export default {
   data() {
     return {
-      valid: false,
+      valid: null,
       form: {
         tanggal: null,
         perihal: '',
@@ -141,6 +144,7 @@ export default {
         'Nota Dinas Rahasia',
         'Surat Rahasia',
       ],
+      error: {},
     };
   },
   methods: {
@@ -158,8 +162,29 @@ export default {
         }
       });
     },
+    checkLabel(data) {
+      data.forEach((e) => {
+        if (!this.labels.includes(e)) {
+          this.$store.dispatch('addLabel', e);
+        }
+      });
+    },
+    validateInput() {
+      if (this.form.naskah.length < 1) {
+        this.error.naskah = 'Naskah tidak boleh kosong.';
+        this.valid = false;
+      } else if (this.naskahInput.jenis || this.naskahInput.tujuan.length > 0) {
+        this.error.naskah = 'Naskah belum ditambahkan.';
+        this.valid = false;
+      } else {
+        this.valid = true;
+      }
+    },
     save() {
-      this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.uid });
+      this.validateInput();
+      if (this.valid) {
+        this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.uid });
+      }
     },
   },
   computed: {
@@ -171,6 +196,9 @@ export default {
     },
     tujuan() {
       return this.$store.state.verbal.tujuan.map(e => e['.value']);
+    },
+    labels() {
+      return this.$store.state.verbal.labels.map(e => e['.value']);
     },
   },
   mounted() {

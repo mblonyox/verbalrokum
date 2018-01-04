@@ -7,18 +7,10 @@ const state = {
   bagian: [],
   pegawai: [],
   tujuan: [],
+  labels: [],
 };
 
 const mutations = {
-  setBagian(state, bagian) {
-    state.bagian = bagian;
-  },
-  addPegawai(state, pegawai) {
-    state.pegawai.push(pegawai);
-  },
-  clearPegawai(state) {
-    state.pegawai = [];
-  },
 };
 
 const actions = {
@@ -36,7 +28,7 @@ const actions = {
           return agenda;
         })
         .then((result) => {
-          newRef.child('log').push({ text: 'Verbal direkam.', time: Date.now(), user: rootState.auth.user.uid });
+          newRef.child('log').push({ text: 'Verbal direkam.', time: Date.now(), user: rootState.auth.user.displayName });
           if (result.committed) newRef.child('nomorAgenda').set(`${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`);
           newRef.child('status').set({ text: 'Direkam', color: 'teal' });
           commit('removeQueue');
@@ -48,7 +40,7 @@ const actions = {
     commit('addQueue');
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.child('status').set({ text: newStatus.text, color: newStatus.color });
-    const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.uid });
+    const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.displayName });
     const naskahPromise = verbalRef.child('naskah').set(newStatus.naskah);
     Promise.all([statusPromise, logPromise, naskahPromise]).then(() => {
       commit('removeQueue');
@@ -74,6 +66,11 @@ const actions = {
       readyCallback: () => { commit('removeQueue'); },
     });
   }),
+  setLabelRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
+    bindFirebaseRef('labels', ref, {
+      readyCallback: () => { commit('removeQueue'); },
+    });
+  }),
   initVerbalRef({ commit, dispatch }) {
     const verbalRef = firebase.database().ref('/verbals').orderByKey();
     commit('addQueue');
@@ -94,14 +91,23 @@ const actions = {
     commit('addQueue');
     dispatch('setPegawaiRef', pegawaiRef);
   },
+  initLabelRef({ commit, dispatch }) {
+    const labelRef = firebase.database().ref('/labels');
+    commit('addQueue');
+    dispatch('setLabelRef', labelRef);
+  },
   initAllRef({ dispatch }) {
     dispatch('initVerbalRef');
     dispatch('initTujuanRef');
     dispatch('initBagianRef');
     dispatch('initPegawaiRef');
+    dispatch('initLabelRef');
   },
   addTujuan({ commit }, tujuan) {
     firebase.database().ref('/tujuan').push(tujuan);
+  },
+  addLabel({ commit }, label) {
+    firebase.database().ref('/labels').push(label);
   },
 };
 

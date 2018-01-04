@@ -75,7 +75,7 @@ const actions = {
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
-        commit('setUser', { ...userdata, ...user });
+        commit('setUser', { ...user, ...userdata });
         if (!state.loggedIn) {
           commit('setLoggedIn', true);
           router.push('/');
