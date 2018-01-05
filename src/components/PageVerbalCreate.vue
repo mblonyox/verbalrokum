@@ -54,14 +54,26 @@
               autocomplete
             />
             <v-divider/>
-            <v-list>
+            <v-list two-line>
               <v-subheader>Konsep Naskah</v-subheader>
-              <v-list-tile v-for="item in form.naskah" :key="item.key">
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="item.jenis"/>
-                  <v-list-tile-sub-title v-html="item.tujuan.join(', ')"/>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-layout>
+                <v-flex xs12 md6>
+                  <v-list-tile avatar v-for="item in form.naskah" :key="item.key">
+                    <v-list-tile-avatar>
+                      <v-icon class="blue white--text">{{ getInitial(item.jenis) }}</v-icon>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="item.jenis"/>
+                      <v-list-tile-sub-title v-html="item.tujuan.join(', ')"/>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                      <v-btn icon ripple @click="deleteNaskah(item)">
+                        <v-icon color="grey lighten-1">delete</v-icon>
+                      </v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </v-flex>
+              </v-layout>
             </v-list>
             <v-alert color="warning" icon="priority_high" :value="!!error.naskah">{{ error.naskah }}</v-alert>
             <v-layout>
@@ -144,16 +156,35 @@ export default {
         'Nota Dinas Rahasia',
         'Surat Rahasia',
       ],
-      error: {},
+      error: {
+        naskah: '',
+      },
     };
   },
   methods: {
     addNaskah() {
-      this.form.naskah.push(this.naskahInput);
-      this.naskahInput = {
-        jenis: '',
-        tujuan: [],
-      };
+      if (!this.naskahInput.jenis) {
+        this.error.naskah = 'Jenis naskah harus diisi.';
+      } else if (!this.naskahInput.tujuan.length) {
+        this.error.naskah = 'Tujuan naskah harus diisi.';
+      } else {
+        this.error.naskah = '';
+        this.form.naskah.push(this.naskahInput);
+        this.naskahInput = {
+          jenis: '',
+          tujuan: [],
+        };
+      }
+    },
+    deleteNaskah(item) {
+      this.form.naskah.splice(this.form.naskah.indexOf(item), 1);
+    },
+    getInitial(str) {
+      let result = '';
+      str.split(' ').forEach((word) => {
+        result += word.charAt();
+      });
+      return result;
     },
     checkTujuan(data) {
       data.forEach((e) => {
@@ -177,6 +208,7 @@ export default {
         this.error.naskah = 'Naskah belum ditambahkan.';
         this.valid = false;
       } else {
+        this.error.naskah = '';
         this.valid = true;
       }
     },
