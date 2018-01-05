@@ -24,7 +24,7 @@
         :rows-per-page-items="[25, 50, 100, {text: 'All', value: -1}]"
         :search="search"
       >
-        <template slot="items" scope="props">
+        <template slot="items" slot-scope="props">
           <td><router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link></td>
           <td>{{ props.item.tanggal }}</td>
           <td>{{ props.item.bagian }}</td>

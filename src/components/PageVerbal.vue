@@ -71,7 +71,7 @@
                 :items="logs"
                 hide-actions
               >
-                <template slot="items" scope="props">
+                <template slot="items" slot-scope="props">
                   <td>{{ formatTime(props.item.time) }}</td>
                   <td>{{ props.item.user }}</td>
                   <td>{{ props.item.text }}</td>
