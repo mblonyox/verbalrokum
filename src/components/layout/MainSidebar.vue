@@ -13,10 +13,17 @@
         </v-list-tile>
       </template>
     </v-list>
+    <v-divider/>
+    <div class="copyright">
+      <b>© 2018 Sukirno</b>
+      <p>Versi: {{version}}</p>
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script>
+import { version } from '../../../package.json';
+
 export default {
   data() {
     return {
@@ -33,6 +40,7 @@ export default {
         { title: 'Saran', icon: 'feedback', route: '/feedback' },
         { title: 'Bantuan', icon: 'help', route: '/help' },
       ],
+      version,
     };
   },
   computed: {
@@ -50,3 +58,15 @@ export default {
   },
 };
 </script>
+
+<style lang="css">
+.navigation-drawer--mini-variant .copyright {
+  display: none;
+}
+
+div.copyright {
+  position: absolute;
+  bottom: 0px;
+  left: 10px;
+}
+</style>
