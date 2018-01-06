@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer persistent clipped app v-model="sidebar">
+  <v-navigation-drawer disable-route-watcher clipped app :mini-variant="miniSidebar" v-model="showSidebar">
     <v-list class="pt-0">
       <template v-for="item in menus">
         <v-divider v-if="item === 'divider'" />
@@ -18,13 +18,30 @@
 
 <script>
 export default {
+  data() {
+    return {
+      menus: [
+        { title: 'Dashboard', icon: 'dashboard', route: '/' },
+        'divider',
+        { title: 'Rekam verbal', icon: 'add', route: '/verbal/rekam' },
+        { title: 'Daftar Verbal', icon: 'assignment', route: '/verbal' },
+        'divider',
+        { title: 'Laporan', icon: 'book', route: '/laporan' },
+        { title: 'Statistik', icon: 'trending_up', route: '/statistik' },
+        'divider',
+        { title: 'Pengaturan', icon: 'settings', route: '/settings' },
+        { title: 'Saran', icon: 'feedback', route: '/feedback' },
+        { title: 'Bantuan', icon: 'help', route: '/help' },
+      ],
+    };
+  },
   computed: {
-    menus() {
-      return this.$store.state.app.menus;
+    miniSidebar() {
+      return this.$store.getters.isMiniSidebar;
     },
-    sidebar: {
+    showSidebar: {
       get() {
-        return this.$store.state.app.sidebar;
+        return !this.$store.getters.isHiddenSidebar;
       },
       set(val) {
         this.$store.commit('setSidebar', val);

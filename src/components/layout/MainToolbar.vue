@@ -22,7 +22,7 @@
       <v-card>
         <v-card-title primary-title>
           <v-avatar>
-            <img :src="user.photoURL" alt="profile-photo">
+            <img :src="profilePicture" alt="profile-photo">
           </v-avatar>
           <div>
             <span class="title">{{user.displayName}}</span><br>
@@ -38,10 +38,15 @@
 </template>
 
 <script>
+import noProfile from '../../assets/no-profile.jpg';
+
 export default {
   computed: {
     user() {
       return this.$store.state.auth.user;
+    },
+    profilePicture() {
+      return this.user.photoUrl || noProfile;
     },
   },
   methods: {

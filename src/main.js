@@ -15,6 +15,10 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 router.beforeEach((to, from, next) => {
+  if (store.state.app.device.isMobile && store.state.app.sidebar) {
+    store.commit('setSidebar', false);
+  }
+
   if (to.matched.some(record => record.meta.requiresAuth) && !store.state.auth.loggedIn) {
     next('/auth/login');
   } else {

@@ -141,7 +141,7 @@
               v-model="form.lampiran"
             />
             <v-btn @click="save" color="primary">Simpan</v-btn>
-            <v-btn to="/verbal/all">Batal</v-btn>
+            <v-btn to="/verbal">Batal</v-btn>
           </v-form>
         </v-flex>
       </v-layout>

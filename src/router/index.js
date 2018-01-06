@@ -29,7 +29,7 @@ const router = new Router({
           component: PageDashboard,
         },
         {
-          path: 'verbal/all',
+          path: 'verbal',
           component: PageVerbalAll,
         },
         {
