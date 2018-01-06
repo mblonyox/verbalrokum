@@ -3,7 +3,8 @@
     <v-card>
       <v-layout>
         <v-flex xs10 offset-xs1>
-          <v-form v-model="valid">
+          <h3>Rekam Verbal Baru</h3>
+          <v-form ref="form" v-model="valid">
             <v-menu
               lazy
               v-model="datepicker"
@@ -27,16 +28,18 @@
               prepend-icon="domain"
               v-model="form.bagian"
               :items="bagian"
+              :rules="rules.bagian"
+              required
             />
-            <v-layout row>
-              <v-flex xs5>
+            <v-layout row wrap>
+              <v-flex xs12 md5>
                 <v-text-field
                   label="Nomor Nota Dinas Bagian"
                   prepend-icon="description"
                   v-model="form.notaBagian"
                 />
               </v-flex>
-              <v-flex xs6 offset-xs1>
+              <v-flex xs12 md6 offset-md1>
                 <v-text-field
                   label="Nomor Verbal Bagian"
                   prepend-icon="receipt"
@@ -51,6 +54,8 @@
               :items="pegawai"
               item-text="NamaLengkap"
               item-value="IDPegawai"
+              :rules="rules.konseptor"
+              required
               autocomplete
             />
             <v-divider/>
@@ -75,12 +80,13 @@
                 </v-flex>
               </v-layout>
             </v-list>
-            <v-alert color="warning" icon="priority_high" :value="!!error.naskah">{{ error.naskah }}</v-alert>
+            <v-alert color="error" icon="priority_high" :value="!!error.naskah">{{ error.naskah }}</v-alert>
             <v-layout>
               <v-flex xs2 offset-xs1>
                 <v-select
                   label="Jenis Naskah"
                   v-model="naskahInput.jenis"
+                  combobox
                   :items="jenis"
                 />
               </v-flex>
@@ -92,10 +98,23 @@
                   tags
                   multiple
                   @change="checkTujuan"
-                />
+                >
+                  <template slot="selection" slot-scope="data">
+                    <v-chip
+                      close
+                      @input="data.parent.selectItem(data.item)"
+                    >
+                      {{ naskahInput.tujuan.indexOf(data.item) + 1}}.
+                      {{data.item}}
+                    </v-chip>
+                  </template>
+                </v-select>
               </v-flex>
               <v-flex xs2>
-                <v-btn @click="addNaskah">Tambah</v-btn>
+                <v-btn @click="addNaskah" class="hidden-sm-and-down">Tambah</v-btn>
+                <v-btn @click="addNaskah" class="hidden-md-and-up" fab outline small>
+                  <v-icon>add</v-icon>
+                </v-btn>
               </v-flex>
             </v-layout>
             <v-divider/>
@@ -113,13 +132,16 @@
               prepend-icon="message"
               v-model="form.perihal"
               multi-line
+              :rules="rules.perihal"
+              required
             />
             <v-text-field
               label="Lampiran"
               prepend-icon="attachment"
               v-model="form.lampiran"
             />
-            <v-btn @click="save">Simpan</v-btn>
+            <v-btn @click="save" color="primary">Simpan</v-btn>
+            <v-btn to="/verbal/all">Batal</v-btn>
           </v-form>
         </v-flex>
       </v-layout>
@@ -144,8 +166,19 @@ export default {
         verbBagian: '',
       },
       naskahInput: {
-        jenis: '',
+        jenis: null,
         tujuan: [],
+      },
+      rules: {
+        bagian: [
+          v => !!v || 'Bagian wajib diisi.',
+        ],
+        konseptor: [
+          v => !!v || 'Konseptor wajib diisi.',
+        ],
+        perihal: [
+          v => !!v || 'Perihal wajib diisi.',
+        ],
       },
       datepicker: false,
       jenis: [
@@ -211,6 +244,7 @@ export default {
         this.error.naskah = '';
         this.valid = true;
       }
+      this.$refs.form.validate();
     },
     save() {
       this.validateInput();
