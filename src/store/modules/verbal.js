@@ -8,9 +8,28 @@ const state = {
   pegawai: [],
   tujuan: [],
   labels: [],
+  filters: {
+    status: [
+      'Direkam',
+      'Terima',
+      'Ajukan',
+      'Setuju',
+      'Perbaikan',
+      'Arsipkan',
+    ],
+  },
 };
 
 const mutations = {
+  setFilterStatus(state, statuses) {
+    state.filters.status = statuses;
+  },
+};
+
+const getters = {
+  filteredVerbals(state) {
+    return state.verbals.filter(v => state.filters.status.includes(v.status.text));
+  },
 };
 
 const actions = {
@@ -114,5 +133,6 @@ const actions = {
 export default {
   state,
   mutations,
+  getters,
   actions,
 };

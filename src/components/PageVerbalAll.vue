@@ -1,7 +1,35 @@
 <template>
   <div id="page-verbal">
     <v-layout>
-      <v-flex md4/>
+      <v-flex md2>
+        <v-expansion-panel popup class="mb-2">
+          <v-expansion-panel-content>
+            <div slot="header">Filter Status</div>
+            <v-card>
+              <v-card-text>
+                <v-checkbox
+                  v-model="filterStatus"
+                  label="Direkam"
+                  value="Direkam"
+                  color="teal"
+                  key="cb-Direkam"
+                />
+                <v-checkbox 
+                  v-for="item in status"
+                  v-model="filterStatus"
+                  :label="item.text"
+                  :value="item.text"
+                  :color="item.color" 
+                  :key="'cb-'+item.text"
+                />
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-flex>
+      <v-flex md2>
+
+      </v-flex>
       <v-flex md6>
         <v-text-field
           label="Keyword..."
@@ -115,10 +143,18 @@ export default {
   },
   computed: {
     verbals() {
-      return this.$store.state.verbal.verbals.slice().reverse();
+      return this.$store.getters.filteredVerbals.slice().reverse();
     },
     pegawai() {
       return this.$store.state.verbal.pegawai;
+    },
+    filterStatus: {
+      get() {
+        return this.$store.state.verbal.filters.status;
+      },
+      set(val) {
+        this.$store.commit('setFilterStatus', val);
+      },
     },
   },
   methods: {
