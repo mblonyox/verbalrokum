@@ -49,6 +49,7 @@ const router = new Router({
     {
       path: '/auth',
       component: LayoutPlain,
+      meta: { requiresAuth: false },
       children: [
         {
           path: 'login',
