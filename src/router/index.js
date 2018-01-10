@@ -41,6 +41,14 @@ const router = new Router({
           component: PageVerbal,
         },
         {
+          path: 'verbal/:id/edit',
+          component: PageVerbalCreate,
+          props: route => ({
+            editMode: true,
+            id: route.params.id,
+          }),
+        },
+        {
           path: 'settings',
           component: PageSettings,
         },

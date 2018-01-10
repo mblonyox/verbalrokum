@@ -3,7 +3,8 @@
     <v-card>
       <v-layout>
         <v-flex xs10 offset-xs1>
-          <h3>Rekam Verbal Baru</h3>
+          <h3 v-if="editMode">Edit Verbal</h3>
+          <h3 v-else>Rekam Verbal Baru</h3>
           <v-form ref="form" v-model="valid">
             <v-menu
               lazy
@@ -204,7 +205,7 @@ export default {
         this.error.naskah = '';
         this.form.naskah.push(this.naskahInput);
         this.naskahInput = {
-          jenis: '',
+          jenis: null,
           tujuan: [],
         };
       }
@@ -249,10 +250,11 @@ export default {
     save() {
       this.validateInput();
       if (this.valid) {
-        this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.uid });
+        if (!this.editMode) this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.displayName });
       }
     },
   },
+  props: ['editMode', 'id'],
   computed: {
     bagian() {
       return this.$store.state.verbal.bagian;
@@ -266,10 +268,19 @@ export default {
     labels() {
       return this.$store.state.verbal.labels.map(e => e['.value']);
     },
+    verbal() {
+      return this.editMode ? this.$store.state.verbal.verbals.find(v => v['.key'] === this.id) : null;
+    },
   },
   mounted() {
-    const d = new Date();
-    this.form.tanggal = d.toISOString().substr(0, 10);
+    if (this.editMode) {
+      Object.keys(this.form).forEach((k) => {
+        this.form[k] = this.verbal[k];
+      });
+    } else {
+      const d = new Date();
+      this.form.tanggal = d.toISOString().substr(0, 10);
+    }
   },
 };
 </script>
