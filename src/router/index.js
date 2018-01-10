@@ -38,10 +38,12 @@ const router = new Router({
         },
         {
           path: 'verbal/:id',
+          name: 'DetailVerbal',
           component: PageVerbal,
         },
         {
           path: 'verbal/:id/edit',
+          name: 'EditVerbal',
           component: PageVerbalCreate,
           props: route => ({
             editMode: true,

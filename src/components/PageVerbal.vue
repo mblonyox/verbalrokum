@@ -63,6 +63,10 @@
                 <v-flex xs4><v-subheader>Status</v-subheader></v-flex>
                 <v-flex xs8> <v-chip :color="verbal.status.color" text-color="white">{{ verbal.status.text }}</v-chip></v-flex>
               </v-layout>
+              <div class="text-xs-center">
+                <v-btn :to="{name: 'EditVerbal', params: { id: $route.params.id }}" color="cyan">Edit</v-btn>
+                <v-btn to="/verbal">Kembali</v-btn>
+              </div>
             </v-tabs-content>
             <v-tabs-content id="tab-logs">
               <br>

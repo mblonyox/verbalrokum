@@ -142,7 +142,7 @@
               v-model="form.lampiran"
             />
             <v-btn @click="save" color="primary">Simpan</v-btn>
-            <v-btn to="/verbal">Batal</v-btn>
+            <v-btn :to="editMode ? {name: 'DetailVerbal', params: { id }} : '/verbal' ">Batal</v-btn>
           </v-form>
         </v-flex>
       </v-layout>
@@ -275,7 +275,7 @@ export default {
   mounted() {
     if (this.editMode) {
       Object.keys(this.form).forEach((k) => {
-        this.form[k] = this.verbal[k];
+        if (this.verbal[k] !== undefined) this.form[k] = this.verbal[k];
       });
     } else {
       const d = new Date();
