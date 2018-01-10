@@ -81,6 +81,9 @@
             <v-text-field
               label="Catatan"
               v-model="dialog.note"
+              auto-grow
+              multi-line
+              rows="2"
             />
             <template v-if="dialog.status && dialog.status.text === 'Arsipkan'">
               <v-divider/>
@@ -136,7 +139,7 @@ export default {
         { text: 'Terima', color: 'yellow', logText: 'Verbal diterima TU Biro' },
         { text: 'Ajukan', color: 'blue', logText: 'Verbal diajukan ke Kepala Biro' },
         { text: 'Setuju', color: 'green', logText: 'Verbal disetujui Kepala Biro' },
-        { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh Kepala Biro' },
+        { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh TU atau Kepala Biro' },
         { text: 'Arsipkan', color: 'grey', logText: 'Verbal diarsipkan' },
       ],
     };
