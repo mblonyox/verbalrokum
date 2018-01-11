@@ -65,6 +65,17 @@ const actions = {
       commit('removeQueue');
     });
   },
+  editVerbal({ commit, state, rootState }, data) {
+    commit('addQueue');
+    const { id, form } = data;
+    const verbalRef = firebase.database().ref('/verbals').child(id);
+    verbalRef.update(form)
+      .then(() => {
+        verbalRef.child('log').push({ text: 'Verbal diubah.', time: Date.now(), user: rootState.auth.user.displayName });
+        commit('removeQueue');
+        router.push('/verbal');
+      });
+  },
   setVerbalRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
     bindFirebaseRef('verbals', ref, {
       readyCallback: () => { commit('removeQueue'); },

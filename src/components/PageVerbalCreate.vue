@@ -5,6 +5,7 @@
         <v-flex xs10 offset-xs1>
           <h3 v-if="editMode">Edit Verbal</h3>
           <h3 v-else>Rekam Verbal Baru</h3>
+          <h4 v-if="editMode">Nomor Agenda : {{ verbal.nomorAgenda }}</h4>
           <v-form ref="form" v-model="valid">
             <v-menu
               lazy
@@ -250,7 +251,8 @@ export default {
     save() {
       this.validateInput();
       if (this.valid) {
-        if (!this.editMode) this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.displayName });
+        if (this.editMode) this.$store.dispatch('editVerbal', { id: this.id, form: this.form });
+        else this.$store.dispatch('saveNewVerbal', { ...this.form, createdAt: Date.now(), createdBy: this.$store.state.auth.user.displayName });
       }
     },
   },
