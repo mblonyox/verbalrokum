@@ -61,6 +61,9 @@
           <td>{{ props.item.perihal }}</td>
           <td><v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip></td>
           <td>
+            <v-btn small v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
+              <v-icon>print</v-icon>
+            </v-btn>
             <v-btn small @click.stop="openDialog(props.item)">Update</v-btn>
           </td>
         </template>
@@ -178,6 +181,10 @@ export default {
       const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note, naskah: this.dialog.item.naskah };
       this.$store.dispatch('updateVerbalStatus', newStatus);
       this.closeDialog();
+    },
+    printPerbaikan(item) {
+      // eslint-disable-next-line
+      console.log(Object.values(item.log).pop().note);
     },
   },
 };
