@@ -20,7 +20,7 @@
               </v-layout>
               <v-layout row>
                 <v-flex xs4><v-subheader>Tanggal</v-subheader></v-flex>
-                <v-flex xs8>{{ verbal.tanggal }}</v-flex>
+                <v-flex xs8>{{ formatDate(verbal.tanggal) }}</v-flex>
               </v-layout>
               <v-layout row>
                 <v-flex xs4><v-subheader>Bagian</v-subheader></v-flex>
@@ -114,6 +114,9 @@ export default {
   methods: {
     formatTime(time) {
       return new Date(time).toLocaleString('id');
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString('id', { year: 'numeric', month: 'long', day: 'numeric' });
     },
   },
 };

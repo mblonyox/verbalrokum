@@ -54,11 +54,12 @@
       >
         <template slot="items" slot-scope="props">
           <td><router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link></td>
-          <td>{{ props.item.tanggal }}</td>
+          <td>{{ new Date(props.item.tanggal).toLocaleDateString('id') }}</td>
           <td>{{ props.item.bagian }}</td>
           <td>{{ idToPegawai(props.item.konseptor).NamaLengkap }}</td>
           <td><span style="white-space: nowrap;">{{ props.item.notaBagian }}</span> <br> <span style="white-space: nowrap;">{{ props.item.verbBagian }}</span> </td>
           <td>{{ props.item.perihal }}</td>
+          <td><p class="nowrap">{{ prettyTime(getLastUpdate(props.item)) }}</p></td>
           <td><v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip></td>
           <td>
             <v-btn small v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
@@ -131,6 +132,7 @@ export default {
         { text: 'Konseptor', value: 'konseptor', align: 'center' },
         { text: 'Nota&Verbal Bagian', align: 'center', sortable: false },
         { text: 'Perihal', align: 'center', sortable: false },
+        { text: 'Diperbarui', align: 'center', sortable: false },
         { text: 'Status', align: 'center', sortable: false },
         { text: 'Aksi', align: 'center', sortable: false },
       ],
@@ -169,6 +171,28 @@ export default {
     idToPegawai(id) {
       return this.pegawai.find(e => e.IDPegawai === id);
     },
+    getLastUpdate(item) {
+      return Object.values(item.log).pop().time;
+    },
+    prettyTime(timeString) {
+      const date = new Date(timeString);
+      const diff = Math.floor(((new Date()).getTime() - date.getTime()) / 1000);
+      const dayDiff = Math.floor(diff / 86400);
+
+      if (isNaN(dayDiff) || dayDiff < 0) return '';
+
+      return (dayDiff === 0 && (
+        (diff < 60 && 'baru saja') ||
+        (diff < 120 && 'semenit lalu') ||
+        (diff < 3600 && `${Math.floor(diff / 60)} menit lalu`) ||
+        (diff < 7200 && 'sejam yang lalu') ||
+        (diff < 86400 && `${Math.floor(diff / 3600)} jam lalu`)
+      )) ||
+      (dayDiff === 1 && 'kemarin') ||
+      (dayDiff < 7 && `${dayDiff} hari lalu`) ||
+      (dayDiff < 31 && `${Math.ceil(dayDiff / 7)} minggu lalu`) ||
+      (dayDiff < 365 && `${Math.ceil(dayDiff / 30)} bulan lalu`);
+    },
     openDialog(item) {
       this.dialog.item = item;
       this.dialog.display = true;
@@ -199,3 +223,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.nowrap {
+  white-space: nowrap;
+}
+</style>
