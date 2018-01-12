@@ -116,6 +116,8 @@
 </template>
 
 <script>
+import printHelper from '../helpers/print-perbaikan';
+
 export default {
   data() {
     return {
@@ -183,8 +185,16 @@ export default {
       this.closeDialog();
     },
     printPerbaikan(item) {
-      // eslint-disable-next-line
-      console.log(Object.values(item.log).pop().note);
+      const data = {};
+      data.nomorAgenda = item.nomorAgenda;
+      data.tanggal = new Date(item.tanggal).toLocaleDateString('id', { year: 'numeric', month: 'long', day: 'numeric' });
+      data.bagian = item.bagian;
+      data.konseptor = this.idToPegawai(item.konseptor).NamaLengkap;
+      data.notaBag = item.notaBagian;
+      data.verbBag = item.verbBagian;
+      data.perihal = item.perihal;
+      data.catatan = Object.values(item.log).pop().note;
+      printHelper(data);
     },
   },
 };
