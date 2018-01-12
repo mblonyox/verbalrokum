@@ -22,7 +22,7 @@ export default {
         const rect = body.getBoundingClientRect();
         const isMobile = rect.width - RATIO < WIDTH;
         this.$store.commit('setDevice', isMobile ? 'mobile' : 'other');
-        this.$store.commit('setSidebar', !isMobile);
+        // this.$store.commit('setSidebar', !isMobile);
       }
     };
 

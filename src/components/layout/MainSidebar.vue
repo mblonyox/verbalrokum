@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer disable-route-watcher clipped app :mini-variant="miniSidebar" v-model="showSidebar">
+  <v-navigation-drawer stateless clipped app :mini-variant="miniSidebar" v-model="showSidebar">
     <v-list class="pt-0">
       <template v-for="item in menus">
         <v-divider v-if="item === 'divider'" />
