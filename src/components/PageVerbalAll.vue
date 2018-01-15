@@ -153,6 +153,7 @@ export default {
         { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh TU atau Kepala Biro' },
         { text: 'Arsipkan', color: 'grey', logText: 'Verbal diarsipkan' },
       ],
+      now: new Date(),
     };
   },
   computed: {
@@ -191,7 +192,7 @@ export default {
     },
     prettyTime(timeString) {
       const date = new Date(timeString);
-      const diff = Math.floor(((new Date()).getTime() - date.getTime()) / 1000);
+      const diff = Math.floor(((this.now).getTime() - date.getTime()) / 1000);
       const dayDiff = Math.floor(diff / 86400);
 
       if (isNaN(dayDiff) || dayDiff < 0) return '';
@@ -241,6 +242,9 @@ export default {
   },
   directives: {
     ClickOutside,
+  },
+  created() {
+    setInterval(() => { this.now = new Date(); }, 60000);
   },
 };
 </script>
