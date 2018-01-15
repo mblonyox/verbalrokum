@@ -1,12 +1,18 @@
 <template>
   <div id="page-verbal">
-    <v-layout>
-      <v-flex md2>
-        <v-expansion-panel popup class="mb-2">
-          <v-expansion-panel-content>
+    <v-layout wrap>
+      <v-flex xs12 md2>
+        <v-expansion-panel popup v-click-outside="blurFilterCheckbox" class="mb-2">
+          <v-expansion-panel-content v-model="filterPanel" >
             <div slot="header">Filter Status</div>
             <v-card>
               <v-card-text>
+                <v-checkbox
+                  v-model="statusFilterCheckbox"
+                  :indeterminate="statusFilterCheckbox === 'indeterminate'"
+                  label="Semua"
+                  color="black"
+                />
                 <v-checkbox
                   v-model="filterStatus"
                   label="Direkam"
@@ -27,24 +33,20 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-flex>
-      <v-flex md2>
-
-      </v-flex>
-      <v-flex md6>
+      <v-flex xs12 md6 offset-md2>
         <v-text-field
           label="Keyword..."
           v-model="search"
           single-line
         />
       </v-flex>
-      <v-flex md2/>
-    </v-layout>
-    <v-card>
-      <div>
-        <v-btn fab absolute top right dark class="green" to="/verbal/rekam">
+      <v-flex xs2 offset-xs10 md1 offset-md1>
+        <v-btn fab dark class="green" to="/verbal/rekam">
           <v-icon>add</v-icon>
         </v-btn>
-      </div>
+      </v-flex>
+    </v-layout>
+    <v-card>
       <v-data-table
         :headers="headers"
         :items="verbals"
@@ -117,11 +119,13 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside';
 import printHelper from '../helpers/print-perbaikan';
 
 export default {
   data() {
     return {
+      filterPanel: false,
       search: '',
       selected: [],
       pagination: { sortBy: null, page: 1, rowsPerPage: 25, descending: false, totalItems: 0 },
@@ -164,6 +168,17 @@ export default {
       },
       set(val) {
         this.$store.commit('setFilterStatus', val);
+      },
+    },
+    statusFilterCheckbox: {
+      get() {
+        if (this.filterStatus.length === 0) return false;
+        else if (this.filterStatus.length >= 6) return true;
+        return 'indeterminate';
+      },
+      set(val) {
+        const allStatus = ['Direkam', 'Terima', 'Ajukan', 'Setuju', 'Perbaikan', 'Arsipkan'];
+        this.$store.commit('setFilterStatus', val ? allStatus : []);
       },
     },
   },
@@ -220,6 +235,12 @@ export default {
       data.catatan = Object.values(item.log).pop().note;
       printHelper(data);
     },
+    blurFilterCheckbox() {
+      this.filterPanel = false;
+    },
+  },
+  directives: {
+    ClickOutside,
   },
 };
 </script>
