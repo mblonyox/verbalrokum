@@ -61,7 +61,7 @@
           <td>{{ idToPegawai(props.item.konseptor).NamaLengkap }}</td>
           <td><span style="white-space: nowrap;">{{ props.item.notaBagian }}</span> <br> <span style="white-space: nowrap;">{{ props.item.verbBagian }}</span> </td>
           <td>{{ props.item.perihal }}</td>
-          <td><p class="nowrap">{{ prettyTime(getLastUpdate(props.item)) }}</p></td>
+          <td><p class="nowrap">{{ prettyTime(props.item.updatedAt) }}</p></td>
           <td><v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip></td>
           <td>
             <v-btn small v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
@@ -136,7 +136,7 @@ export default {
         { text: 'Konseptor', value: 'konseptor', align: 'center' },
         { text: 'Nota&Verbal Bagian', align: 'center', sortable: false },
         { text: 'Perihal', align: 'center', sortable: false },
-        { text: 'Diperbarui', align: 'center', sortable: false },
+        { text: 'Diperbarui', value: 'updatedAt', align: 'center', sortable: true },
         { text: 'Status', align: 'center', sortable: false },
         { text: 'Aksi', align: 'center', sortable: false },
       ],
@@ -186,9 +186,6 @@ export default {
   methods: {
     idToPegawai(id) {
       return this.pegawai.find(e => e.IDPegawai === id);
-    },
-    getLastUpdate(item) {
-      return Object.values(item.log).pop().time;
     },
     prettyTime(timeString) {
       const date = new Date(timeString);

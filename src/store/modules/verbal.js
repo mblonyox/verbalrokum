@@ -47,21 +47,29 @@ const actions = {
           return agenda;
         })
         .then((result) => {
-          newRef.child('log').push({ text: 'Verbal direkam.', time: Date.now(), user: rootState.auth.user.displayName });
-          if (result.committed) newRef.child('nomorAgenda').set(`Verb-${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`);
-          newRef.child('status').set({ text: 'Direkam', color: 'teal' });
-          commit('removeQueue');
-          router.push('/verbal');
+          const agendaPromise = result.committed ? newRef.child('nomorAgenda').set(`Verb-${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`) : null;
+          const logPromise = newRef.child('log').push({ text: 'Verbal direkam.', time: Date.now(), user: rootState.auth.user.displayName });
+          const updatePromise = newRef.update({
+            status: { text: 'Direkam', color: 'teal' },
+            updatedAt: Date.now(),
+          });
+          Promise.all([agendaPromise, logPromise, updatePromise]).then(() => {
+            commit('removeQueue');
+            router.push('/verbal');
+          });
         });
       });
   },
   updateVerbalStatus({ commit, rootState }, newStatus) {
     commit('addQueue');
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
-    const statusPromise = verbalRef.child('status').set({ text: newStatus.text, color: newStatus.color });
+    const statusPromise = verbalRef.update({
+      status: { text: newStatus.text, color: newStatus.color },
+      updatedAt: Date.now(),
+      naskah: newStatus.naskah,
+    });
     const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.displayName });
-    const naskahPromise = verbalRef.child('naskah').set(newStatus.naskah);
-    Promise.all([statusPromise, logPromise, naskahPromise]).then(() => {
+    Promise.all([statusPromise, logPromise]).then(() => {
       commit('removeQueue');
     });
   },
