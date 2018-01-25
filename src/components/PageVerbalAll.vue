@@ -192,19 +192,19 @@ export default {
       const diff = Math.floor(((this.now).getTime() - date.getTime()) / 1000);
       const dayDiff = Math.floor(diff / 86400);
 
-      if (isNaN(dayDiff) || dayDiff < 0) return '';
+      if (isNaN(dayDiff)) return '';
 
-      return (dayDiff === 0 && (
+      return (
         (diff < 60 && 'baru saja') ||
         (diff < 120 && 'semenit lalu') ||
         (diff < 3600 && `${Math.floor(diff / 60)} menit lalu`) ||
         (diff < 7200 && 'sejam yang lalu') ||
         (diff < 86400 && `${Math.floor(diff / 3600)} jam lalu`)
-      )) ||
+      ) ||
       (dayDiff === 1 && 'kemarin') ||
       (dayDiff < 7 && `${dayDiff} hari lalu`) ||
-      (dayDiff < 31 && `${Math.ceil(dayDiff / 7)} minggu lalu`) ||
-      (dayDiff < 365 && `${Math.ceil(dayDiff / 30)} bulan lalu`);
+      (dayDiff < 31 && `${Math.floor(dayDiff / 7)} minggu lalu`) ||
+      (dayDiff < 365 && `${Math.floor(dayDiff / 30)} bulan lalu`);
     },
     openDialog(item) {
       this.dialog.item = item;
