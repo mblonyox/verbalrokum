@@ -28,7 +28,7 @@ const mutations = {
 
 const getters = {
   filteredVerbals(state) {
-    return state.verbals.filter(v => state.filters.status.includes(v.status.text));
+    return state.verbals.filter(v => state.filters.status.includes(v.status ? v.status.text : ''));
   },
 };
 

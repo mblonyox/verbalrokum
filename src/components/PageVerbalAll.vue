@@ -64,10 +64,15 @@
           <td><p class="nowrap">{{ prettyTime(props.item.updatedAt) }}</p></td>
           <td><v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip></td>
           <td>
-            <v-btn small v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
+            <v-btn small block v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
               <v-icon>print</v-icon>
             </v-btn>
-            <v-btn small @click.stop="openDialog(props.item)">Update</v-btn>
+            <v-btn v-if="props.item.status.text === 'Arsipkan'" small block @click.stop="openDialog(props.item)">Update</v-btn>
+            <v-btn :color="status[0].color" small block v-if="props.item.status.text === 'Perbaikan'" @click.stop="openDialog(props.item, status[0])">Terima</v-btn>
+            <v-btn :color="status[1].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'" @click.stop="openDialog(props.item, status[1])">Ajukan</v-btn>
+            <v-btn :color="status[2].color" small block dark v-if="props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[2])">Setuju</v-btn>
+            <v-btn :color="status[3].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'|| props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[3])">Perbaikan</v-btn>
+            <v-btn :color="status[4].color" small block dark v-if="props.item.status.text === 'Setuju'" @click.stop="openDialog(props.item, status[4])">Arsipkan</v-btn>
           </td>
         </template>
       </v-data-table>
@@ -77,7 +82,10 @@
           <v-divider/>
           <v-card-text>
             <v-form ref="dialog" v-model="dialog.valid">
-              Anda akan mengubah status verbal agenda: {{ dialog.item.nomorAgenda }}
+              <p>Anda akan mengubah status verbal agenda: <b>{{ dialog.item.nomorAgenda }}</b></p>
+              <p class="mb-5">
+                {{ dialog.item.perihal }}
+              </p>
               <v-select
                 label="Status Baru"
                 required
@@ -213,8 +221,9 @@ export default {
       (dayDiff < 31 && `${Math.floor(dayDiff / 7)} minggu lalu`) ||
       (dayDiff < 365 && `${Math.floor(dayDiff / 30)} bulan lalu`);
     },
-    openDialog(item) {
+    openDialog(item, status) {
       this.dialog.item = item;
+      this.dialog.status = status;
       this.dialog.display = true;
     },
     closeDialog() {

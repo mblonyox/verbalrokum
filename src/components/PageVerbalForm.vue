@@ -222,18 +222,22 @@ export default {
       return result;
     },
     checkTujuan(data) {
-      data.forEach((e) => {
-        if (!this.tujuan.includes(e)) {
-          this.$store.dispatch('addTujuan', e);
-        }
-      });
+      if (Array.isArray(data)) {
+        data.forEach((e) => {
+          if (!this.tujuan.includes(e)) {
+            this.$store.dispatch('addTujuan', e);
+          }
+        });
+      }
     },
     checkLabel(data) {
-      data.forEach((e) => {
-        if (!this.labels.includes(e)) {
-          this.$store.dispatch('addLabel', e);
-        }
-      });
+      if (Array.isArray(data)) {
+        data.forEach((e) => {
+          if (!this.labels.includes(e)) {
+            this.$store.dispatch('addLabel', e);
+          }
+        });
+      }
     },
     validateInput() {
       if (this.form.naskah.length < 1) {
