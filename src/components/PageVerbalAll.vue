@@ -76,36 +76,39 @@
           <v-card-title><h5>Update status verbal</h5></v-card-title>
           <v-divider/>
           <v-card-text>
-            Anda akan mengubah status verbal agenda: {{ dialog.item.nomorAgenda }}
-            <v-select
-              label="Status Baru"
-              required
-              v-model="dialog.status"
-              :items="status"
-              return-object
-            />
-            <v-text-field
-              label="Catatan"
-              v-model="dialog.note"
-              auto-grow
-              multi-line
-              rows="2"
-            />
-            <template v-if="dialog.status && dialog.status.text === 'Arsipkan'">
-              <v-divider/>
-              Penomoran Naskah Dinas: 
-              <v-layout row v-for="naskah in dialog.item.naskah" :key="naskah.key">
-                <v-flex xs4>
-                  <v-subheader>{{ naskah.jenis }}</v-subheader>
-                  {{ naskah.tujuan.join(', ') }}
-                </v-flex>
-                <v-flex xs>
-                  <v-text-field
-                    v-model="naskah.nomor"
-                  />
-                </v-flex>
-              </v-layout>
-            </template>
+            <v-form ref="dialog" v-model="dialog.valid">
+              Anda akan mengubah status verbal agenda: {{ dialog.item.nomorAgenda }}
+              <v-select
+                label="Status Baru"
+                required
+                v-model="dialog.status"
+                :items="status"
+                :rules="dialog.rules"
+                return-object
+              />
+              <v-text-field
+                label="Catatan"
+                v-model="dialog.note"
+                auto-grow
+                multi-line
+                rows="2"
+              />
+              <template v-if="dialog.status && dialog.status.text === 'Arsipkan'">
+                <v-divider/>
+                Penomoran Naskah Dinas: 
+                <v-layout row v-for="naskah in dialog.item.naskah" :key="naskah.key">
+                  <v-flex xs4>
+                    <v-subheader>{{ naskah.jenis }}</v-subheader>
+                    {{ naskah.tujuan.join(', ') }}
+                  </v-flex>
+                  <v-flex xs>
+                    <v-text-field
+                      v-model="naskah.nomor"
+                    />
+                  </v-flex>
+                </v-layout>
+              </template>
+            </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
@@ -145,6 +148,10 @@ export default {
         item: {},
         status: null,
         note: '',
+        rules: [
+          v => !!v || 'Status wajib diisi.',
+        ],
+        valid: false,
       },
       status: [
         { text: 'Terima', color: 'yellow', logText: 'Verbal diterima TU Biro' },
@@ -217,9 +224,12 @@ export default {
       this.dialog.note = '';
     },
     updateVerbal() {
-      const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note, naskah: this.dialog.item.naskah };
-      this.$store.dispatch('updateVerbalStatus', newStatus);
-      this.closeDialog();
+      this.$refs.dialog.validate();
+      if (this.dialog.valid) {
+        const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note, naskah: this.dialog.item.naskah };
+        this.$store.dispatch('updateVerbalStatus', newStatus);
+        this.closeDialog();
+      }
     },
     printPerbaikan(item) {
       const data = {};
