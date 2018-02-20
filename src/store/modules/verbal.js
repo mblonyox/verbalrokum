@@ -14,6 +14,7 @@ const state = {
       'Terima',
       'Ajukan',
       'Setuju',
+      'Koreksi',
       'Perbaikan',
       'Arsipkan',
     ],

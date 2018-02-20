@@ -71,8 +71,9 @@
             <v-btn :color="status[0].color" small block v-if="props.item.status.text === 'Perbaikan'" @click.stop="openDialog(props.item, status[0])">Terima</v-btn>
             <v-btn :color="status[1].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'" @click.stop="openDialog(props.item, status[1])">Ajukan</v-btn>
             <v-btn :color="status[2].color" small block dark v-if="props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[2])">Setuju</v-btn>
-            <v-btn :color="status[3].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'|| props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[3])">Perbaikan</v-btn>
-            <v-btn :color="status[4].color" small block dark v-if="props.item.status.text === 'Setuju'" @click.stop="openDialog(props.item, status[4])">Arsipkan</v-btn>
+            <v-btn :color="status[3].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'" @click.stop="openDialog(props.item, status[3])">Koreksi</v-btn>
+            <v-btn :color="status[4].color" small block dark v-if="props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[4])">Perbaikan</v-btn>
+            <v-btn :color="status[5].color" small block dark v-if="props.item.status.text === 'Setuju'" @click.stop="openDialog(props.item, status[5])">Arsipkan</v-btn>
           </td>
         </template>
       </v-data-table>
@@ -162,10 +163,11 @@ export default {
         valid: false,
       },
       status: [
-        { text: 'Terima', color: 'yellow', logText: 'Verbal diterima TU Biro' },
+        { text: 'Terima', color: 'cyan', logText: 'Verbal diterima TU Biro' },
         { text: 'Ajukan', color: 'blue', logText: 'Verbal diajukan ke Kepala Biro' },
         { text: 'Setuju', color: 'green', logText: 'Verbal disetujui Kepala Biro' },
-        { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh TU atau Kepala Biro' },
+        { text: 'Koreksi', color: 'orange', logText: 'Koreksi verbal oleh TU Biro (typo/administrasi)' },
+        { text: 'Perbaikan', color: 'red', logText: 'Perbaikan verbal oleh Kepala Biro' },
         { text: 'Arsipkan', color: 'grey', logText: 'Verbal diarsipkan' },
       ],
       now: new Date(),
