@@ -49,10 +49,10 @@ const actions = {
         })
         .then((result) => {
           const agendaPromise = result.committed ? newRef.child('nomorAgenda').set(`Verb-${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`) : null;
-          const logPromise = newRef.child('log').push({ text: 'Verbal direkam.', time: Date.now(), user: rootState.auth.user.displayName });
+          const logPromise = newRef.child('log').push({ text: 'Verbal direkam.', time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
           const updatePromise = newRef.update({
             status: { text: 'Direkam', color: 'teal' },
-            updatedAt: Date.now(),
+            updatedAt: firebase.database.ServerValue.TIMESTAMP,
           });
           Promise.all([agendaPromise, logPromise, updatePromise]).then(() => {
             commit('removeQueue');
@@ -66,10 +66,10 @@ const actions = {
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.update({
       status: { text: newStatus.text, color: newStatus.color },
-      updatedAt: Date.now(),
+      updatedAt: firebase.database.ServerValue.TIMESTAMP,
       naskah: newStatus.naskah,
     });
-    const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: Date.now(), user: rootState.auth.user.displayName });
+    const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
     Promise.all([statusPromise, logPromise]).then(() => {
       commit('removeQueue');
     });
@@ -80,7 +80,7 @@ const actions = {
     const verbalRef = firebase.database().ref('/verbals').child(id);
     verbalRef.update(form)
       .then(() => {
-        verbalRef.child('log').push({ text: 'Verbal diubah.', time: Date.now(), user: rootState.auth.user.displayName });
+        verbalRef.child('log').push({ text: 'Verbal diubah.', time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
         commit('removeQueue');
         router.push('/verbal');
       });
