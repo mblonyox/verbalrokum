@@ -25,6 +25,12 @@ const mutations = {
   setFilterStatus(state, statuses) {
     state.filters.status = statuses;
   },
+  setBagian(state, bagian) {
+    state.bagian = bagian;
+  },
+  setPegawai(state, pegawai) {
+    state.pegawai = pegawai;
+  },
 };
 
 const getters = {
@@ -90,56 +96,44 @@ const actions = {
       readyCallback: () => { commit('removeQueue'); },
     });
   }),
-  setBagianRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('bagian', ref, {
-      readyCallback: () => { commit('removeQueue'); },
-    });
-  }),
-  setPegawaiRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('pegawai', ref, {
-      readyCallback: () => { commit('removeQueue'); },
-    });
-  }),
   setTujuanRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('tujuan', ref, {
-      readyCallback: () => { commit('removeQueue'); },
-    });
+    bindFirebaseRef('tujuan', ref);
   }),
   setLabelRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('labels', ref, {
-      readyCallback: () => { commit('removeQueue'); },
-    });
+    bindFirebaseRef('labels', ref);
   }),
   initVerbalRef({ commit, dispatch }) {
     const verbalRef = firebase.database().ref('/verbals').orderByKey();
     commit('addQueue');
     dispatch('setVerbalRef', verbalRef);
   },
-  initTujuanRef({ commit, dispatch }) {
+  initTujuanRef({ dispatch }) {
     const tujuanRef = firebase.database().ref('/tujuan');
-    commit('addQueue');
     dispatch('setTujuanRef', tujuanRef);
   },
-  initBagianRef({ commit, dispatch }) {
-    const bagianRef = firebase.database().ref('/bagians');
-    commit('addQueue');
-    dispatch('setBagianRef', bagianRef);
-  },
-  initPegawaiRef({ commit, dispatch }) {
-    const pegawaiRef = firebase.database().ref('/pegawai');
-    commit('addQueue');
-    dispatch('setPegawaiRef', pegawaiRef);
-  },
-  initLabelRef({ commit, dispatch }) {
+  initLabelRef({ dispatch }) {
     const labelRef = firebase.database().ref('/labels');
-    commit('addQueue');
     dispatch('setLabelRef', labelRef);
   },
+  initPegawaiBagian({ commit }) {
+    const db = firebase.database();
+    const arr = [];
+    db.ref('/pegawai')
+      .once('value', (snapshot) => {
+        snapshot.forEach((data) => {
+          arr.push(data.val());
+        });
+        commit('setPegawai', arr);
+      });
+    db.ref('/bagians')
+      .once('value', (snapshot) => {
+        commit('setBagian', snapshot.val());
+      });
+  },
   initAllRef({ dispatch }) {
+    dispatch('initPegawaiBagian');
     dispatch('initVerbalRef');
     dispatch('initTujuanRef');
-    dispatch('initBagianRef');
-    dispatch('initPegawaiRef');
     dispatch('initLabelRef');
   },
   addTujuan({ commit }, tujuan) {
