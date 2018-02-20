@@ -35,6 +35,8 @@
                     // fresh content will have been added to the cache.
                     // It's the perfect time to display a "New content is
                     // available; please refresh." message in the page's interface.
+                    window.alert('Versi terbaru telah terpasang. Memuat ulang aplikasi.');
+                    window.location.reload(true);
                     break;
 
                   case 'redundant':
@@ -47,6 +49,8 @@
               };
             }
           };
+
+          window.swRegist = registration;
         }).catch(function(e) {
           console.error('Error during service worker registration:', e);
         });
