@@ -92,12 +92,13 @@
                 required
                 v-model="dialog.status"
                 :items="status"
-                :rules="dialog.rules"
+                :rules="dialog.rules.status"
                 return-object
               />
               <v-text-field
                 label="Catatan"
                 v-model="dialog.note"
+                :rules="dialog.rules.catatan"
                 auto-grow
                 multi-line
                 rows="2"
@@ -157,9 +158,14 @@ export default {
         item: {},
         status: null,
         note: '',
-        rules: [
-          v => !!v || 'Status wajib diisi.',
-        ],
+        rules: {
+          status: [
+            v => !!v || 'Status wajib diisi.',
+          ],
+          catatan: [
+            v => !!v || (this.dialog.status && this.dialog.status.text !== 'Perbaikan' && this.dialog.status.text !== 'Koreksi') || 'Catatan harus diisi jika perbaikan atau koreksi.',
+          ],
+        },
         valid: false,
       },
       status: [
@@ -224,6 +230,7 @@ export default {
       (dayDiff < 365 && `${Math.floor(dayDiff / 30)} bulan lalu`);
     },
     openDialog(item, status) {
+      this.$refs.dialog.reset();
       this.dialog.item = item;
       this.dialog.status = status;
       this.dialog.display = true;
@@ -233,10 +240,10 @@ export default {
       this.dialog.display = false;
       this.dialog.status = null;
       this.dialog.note = '';
+      this.$refs.dialog.reset();
     },
     updateVerbal() {
-      this.$refs.dialog.validate();
-      if (this.dialog.valid) {
+      if (this.$refs.dialog.validate()) {
         const newStatus = { ...this.dialog.status, uid: this.dialog.item['.key'], note: this.dialog.note, naskah: this.dialog.item.naskah };
         this.$store.dispatch('updateVerbalStatus', newStatus);
         this.closeDialog();
