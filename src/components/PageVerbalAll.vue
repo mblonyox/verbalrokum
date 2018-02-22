@@ -68,7 +68,7 @@
               <v-icon>print</v-icon>
             </v-btn>
             <v-btn v-if="props.item.status.text === 'Arsipkan'" small block @click.stop="openDialog(props.item)">Update</v-btn>
-            <v-btn :color="status[0].color" small block v-if="props.item.status.text === 'Perbaikan'" @click.stop="openDialog(props.item, status[0])">Terima</v-btn>
+            <v-btn :color="status[0].color" small block v-if="props.item.status.text === 'Perbaikan' || props.item.status.text === 'Koreksi'" @click.stop="openDialog(props.item, status[0])">Terima</v-btn>
             <v-btn :color="status[1].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'" @click.stop="openDialog(props.item, status[1])">Ajukan</v-btn>
             <v-btn :color="status[2].color" small block dark v-if="props.item.status.text === 'Ajukan'" @click.stop="openDialog(props.item, status[2])">Setuju</v-btn>
             <v-btn :color="status[3].color" small block dark v-if="props.item.status.text === 'Direkam' || props.item.status.text ==='Terima'" @click.stop="openDialog(props.item, status[3])">Koreksi</v-btn>
@@ -201,7 +201,7 @@ export default {
         return 'indeterminate';
       },
       set(val) {
-        const allStatus = ['Direkam', 'Terima', 'Ajukan', 'Setuju', 'Perbaikan', 'Arsipkan'];
+        const allStatus = ['Direkam', 'Terima', 'Ajukan', 'Setuju', 'Koreksi', 'Perbaikan', 'Arsipkan'];
         this.$store.commit('setFilterStatus', val ? allStatus : []);
       },
     },
