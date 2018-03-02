@@ -53,6 +53,7 @@
         :pagination.sync="pagination"
         :rows-per-page-items="[25, 50, 100, {text: 'All', value: -1}]"
         :search="search"
+        :filter="filterSearch"
       >
         <template slot="items" slot-scope="props">
           <td><router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link></td>
@@ -263,6 +264,11 @@ export default {
     },
     blurFilterCheckbox() {
       this.filterPanel = false;
+    },
+    filterSearch(val, search) {
+      return val !== null
+        && ['undefined', 'boolean'].indexOf(typeof val) === -1
+        && (!Number.isInteger(val) && val.toString().toLowerCase().indexOf(search) !== -1);
     },
   },
   directives: {
