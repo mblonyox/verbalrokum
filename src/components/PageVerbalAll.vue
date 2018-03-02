@@ -122,7 +122,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
-            <v-btn color="green darken-1" flat @click.stop="updateVerbal">Update</v-btn>
+            <v-btn color="green lighten-1" dark @click.stop="updateVerbal">Update</v-btn>
             <v-btn color="red darken-1" flat @click.stop="closeDialog">Batal</v-btn>
           </v-card-actions>
         </v-card>
