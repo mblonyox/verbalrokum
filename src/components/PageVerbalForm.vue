@@ -250,7 +250,7 @@ export default {
         this.error.naskah = '';
         this.valid = true;
       }
-      this.$refs.form.validate();
+      if (!this.$refs.form.validate()) this.valid = false;
     },
     save() {
       this.validateInput();
