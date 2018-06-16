@@ -25,6 +25,9 @@ const mutations = {
   setFilterStatus(state, statuses) {
     state.filters.status = statuses;
   },
+  setData(state, { target, value }) {
+    state[target] = value;
+  },
 };
 
 const getters = {
@@ -86,6 +89,13 @@ const actions = {
       });
   },
   /* eslint arrow-body-style: ["off", "always"] */
+  getDataOnce({ commit }, { ref, target }) {
+    return ref.once('value')
+      .then((snapshot) => {
+        const value = Object.values(snapshot.val());
+        commit('setData', { target, value });
+      });
+  },
   setFirebaseRef: firebaseAction(({ bindFirebaseRef }, { ref, target }) => {
     return new Promise((resolve, reject) => {
       bindFirebaseRef(target, ref, {
@@ -98,13 +108,13 @@ const actions = {
     commit('setPending', true);
     const db = firebase.database();
     const refs = [
-      { target: 'verbals', ref: db.ref('/verbals').orderByKey() },
       { target: 'tujuan', ref: db.ref('/tujuan') },
       { target: 'labels', ref: db.ref('/labels') },
       { target: 'pegawai', ref: db.ref('/pegawai') },
       { target: 'bagian', ref: db.ref('/bagians') },
     ];
-    const promises = refs.map(ref => dispatch('setFirebaseRef', ref));
+    const promises = refs.map(ref => dispatch('getDataOnce', ref));
+    promises.push(dispatch('setFirebaseRef', { target: 'verbals', ref: db.ref('/verbals').orderByKey() }));
     Promise.all(promises)
       .then(() => { commit('setPending', false); });
   },
