@@ -4,7 +4,7 @@ const state = {
     isTablet: false,
   },
   sidebar: false,
-  queue: 0,
+  pending: false,
 };
 
 const mutations = {
@@ -15,20 +15,14 @@ const mutations = {
   setSidebar(state, sidebar) {
     state.sidebar = sidebar;
   },
-  addQueue(state) {
-    state.queue += 1;
-  },
-  removeQueue(state) {
-    if (state.queue > 0) state.queue -= 1;
-  },
-  resetQueue(state) {
-    state.queue = 0;
+  setPending(state, isPending) {
+    state.pending = isPending;
   },
 };
 
 const getters = {
   isLoading(state) {
-    return state.queue > 0;
+    return state.pending;
   },
   isMiniSidebar(state) {
     return !state.device.isMobile && !state.sidebar;

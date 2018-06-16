@@ -25,12 +25,6 @@ const mutations = {
   setFilterStatus(state, statuses) {
     state.filters.status = statuses;
   },
-  setBagian(state, bagian) {
-    state.bagian = bagian;
-  },
-  setPegawai(state, pegawai) {
-    state.pegawai = pegawai;
-  },
 };
 
 const getters = {
@@ -44,7 +38,7 @@ const actions = {
     const verbalRef = firebase.database().ref('/verbals');
     const agendaRef = firebase.database().ref('/agenda');
     const currentYear = (new Date()).getFullYear();
-    commit('addQueue');
+    commit('setPending', true);
     verbalRef.push(newVerbal)
       .then((newRef) => {
         agendaRef.child(currentYear).transaction((ag) => {
@@ -61,14 +55,14 @@ const actions = {
             updatedAt: firebase.database.ServerValue.TIMESTAMP,
           });
           Promise.all([agendaPromise, logPromise, updatePromise]).then(() => {
-            commit('removeQueue');
+            commit('setPending', false);
             router.push('/verbal');
           });
         });
       });
   },
   updateVerbalStatus({ commit, rootState }, newStatus) {
-    commit('addQueue');
+    commit('setPending', true);
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.update({
       status: { text: newStatus.text, color: newStatus.color },
@@ -77,64 +71,42 @@ const actions = {
     });
     const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
     Promise.all([statusPromise, logPromise]).then(() => {
-      commit('removeQueue');
+      commit('setPending', false);
     });
   },
   editVerbal({ commit, state, rootState }, data) {
-    commit('addQueue');
+    commit('setPending', true);
     const { id, form } = data;
     const verbalRef = firebase.database().ref('/verbals').child(id);
     verbalRef.update(form)
       .then(() => {
         verbalRef.child('log').push({ text: 'Verbal diubah.', time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
-        commit('removeQueue');
+        commit('setPending', false);
         router.push('/verbal');
       });
   },
-  setVerbalRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('verbals', ref, {
-      readyCallback: () => { commit('removeQueue'); },
+  /* eslint arrow-body-style: ["off", "always"] */
+  setFirebaseRef: firebaseAction(({ bindFirebaseRef }, { ref, target }) => {
+    return new Promise((resolve, reject) => {
+      bindFirebaseRef(target, ref, {
+        readyCallback: () => { resolve(); },
+        errorCallback: () => { reject(new Error('Bind Firebase Ref failed.')); },
+      });
     });
   }),
-  setTujuanRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('tujuan', ref);
-  }),
-  setLabelRef: firebaseAction(({ commit, bindFirebaseRef }, ref) => {
-    bindFirebaseRef('labels', ref);
-  }),
-  initVerbalRef({ commit, dispatch }) {
-    const verbalRef = firebase.database().ref('/verbals').orderByKey();
-    commit('addQueue');
-    dispatch('setVerbalRef', verbalRef);
-  },
-  initTujuanRef({ dispatch }) {
-    const tujuanRef = firebase.database().ref('/tujuan');
-    dispatch('setTujuanRef', tujuanRef);
-  },
-  initLabelRef({ dispatch }) {
-    const labelRef = firebase.database().ref('/labels');
-    dispatch('setLabelRef', labelRef);
-  },
-  initPegawaiBagian({ commit }) {
+  initFirebaseRef({ commit, dispatch }) {
+    commit('setPending', true);
     const db = firebase.database();
-    const arr = [];
-    db.ref('/pegawai')
-      .once('value', (snapshot) => {
-        snapshot.forEach((data) => {
-          arr.push(data.val());
-        });
-        commit('setPegawai', arr);
-      });
-    db.ref('/bagians')
-      .once('value', (snapshot) => {
-        commit('setBagian', snapshot.val());
-      });
-  },
-  initAllRef({ dispatch }) {
-    dispatch('initPegawaiBagian');
-    dispatch('initVerbalRef');
-    dispatch('initTujuanRef');
-    dispatch('initLabelRef');
+    const refs = [
+      { target: 'verbals', ref: db.ref('/verbals').orderByKey() },
+      { target: 'tujuan', ref: db.ref('/tujuan') },
+      { target: 'labels', ref: db.ref('/labels') },
+      { target: 'pegawai', ref: db.ref('/pegawai') },
+      { target: 'bagian', ref: db.ref('/bagians') },
+    ];
+    const promises = refs.map(ref => dispatch('setFirebaseRef', ref));
+    Promise.all(promises)
+      .then(() => { commit('setPending', false); });
   },
   addTujuan({ commit }, tujuan) {
     firebase.database().ref('/tujuan').push(tujuan);

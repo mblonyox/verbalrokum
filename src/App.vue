@@ -30,9 +30,6 @@ export default {
     window.addEventListener('DOMContentLoaded', handler);
     window.addEventListener('resize', handler);
   },
-  created() {
-    this.$store.commit('resetQueue');
-  },
 };
 </script>
 

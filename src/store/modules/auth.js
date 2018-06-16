@@ -41,37 +41,37 @@ const mutations = {
 
 const actions = {
   loginWithEmail({ commit }, credential) {
-    commit('addQueue');
+    commit('setPending', true);
     firebase.auth()
       .signInWithEmailAndPassword(credential.email, credential.password)
       .then(() => {
-        commit('removeQueue');
+        commit('setPending', false);
       })
       .catch((error) => {
         commit('setError', error);
-        commit('removeQueue');
+        commit('setPending', false);
       });
   },
   logout({ commit }) {
-    commit('addQueue');
+    commit('setPending', true);
     firebase.auth().signOut()
       .then(() => {
-        commit('removeQueue');
+        commit('setPending', false);
       })
       .catch((error) => {
         commit('setError', error);
-        commit('removeQueue');
+        commit('setPending', false);
       });
   },
   authChanged({ state, commit, dispatch }, user) {
-    commit('addQueue');
+    commit('setPending', true);
     if (!user) {
       commit('unsetUser');
       if (state.loggedIn) {
         commit('setLoggedIn', false);
         router.push('/auth/login');
       }
-      commit('removeQueue');
+      commit('setPending', false);
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
@@ -80,8 +80,8 @@ const actions = {
           commit('setLoggedIn', true);
           router.push('/');
         }
-        dispatch('initAllRef');
-        commit('removeQueue');
+        commit('setPending', false);
+        dispatch('initFirebaseRef');
       });
     }
   },
