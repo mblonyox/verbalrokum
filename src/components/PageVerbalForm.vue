@@ -52,11 +52,11 @@
             <v-select
               label="Konseptor"
               prepend-icon="person"
-              v-model="form.konseptor"
+              v-model="form.konseptorNama"
               :items="pegawai"
               item-text="NamaLengkap"
-              item-value="IDPegawai"
-              :rules="rules.konseptor"
+              item-value="NamaLengkap"
+              :rules="rules.konseptorNama"
               required
               autocomplete
             />
@@ -162,7 +162,7 @@ export default {
         naskah: [],
         label: [],
         lampiran: '',
-        konseptor: '',
+        konseptorNama: '',
         bagian: '',
         notaBagian: '',
         verbBagian: '',
@@ -175,7 +175,7 @@ export default {
         bagian: [
           v => !!v || 'Bagian wajib diisi.',
         ],
-        konseptor: [
+        konseptorNama: [
           v => !!v || 'Konseptor wajib diisi.',
         ],
         perihal: [
@@ -290,4 +290,3 @@ export default {
   },
 };
 </script>
-

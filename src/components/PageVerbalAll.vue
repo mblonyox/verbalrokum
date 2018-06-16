@@ -57,12 +57,12 @@
       >
         <template slot="items" slot-scope="props">
           <td>
-            <router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link>
-            {{ new Date(props.item.tanggal).toLocaleDateString('id') }}
+            <router-link :to="'/verbal/'+props.item['.key']" class="nowrap">{{ props.item.nomorAgenda }}</router-link><br>
+            {{ new Date(props.item.tanggal).toLocaleDateString('id', {month: 'long', day: 'numeric', year: 'numeric'}) }}
           </td>
           <td>
             <b>Bagian {{ props.item.bagian }}</b><br>
-            {{ idToPegawai(props.item.konseptor) ? idToPegawai(props.item.konseptor).NamaLengkap : '' }}
+            {{ props.item.konseptorNama }}
           </td>
           <td><span style="white-space: nowrap;">{{ props.item.notaBagian }}</span> <br> <span style="white-space: nowrap;">{{ props.item.verbBagian }}</span> </td>
           <td>{{ props.item.perihal }}</td>
@@ -187,9 +187,6 @@ export default {
     verbals() {
       return this.$store.getters.filteredVerbals.slice().reverse();
     },
-    pegawai() {
-      return this.$store.state.verbal.pegawai;
-    },
     filterStatus: {
       get() {
         return this.$store.state.verbal.filters.status;
@@ -211,9 +208,6 @@ export default {
     },
   },
   methods: {
-    idToPegawai(id) {
-      return this.pegawai.find(e => e.IDPegawai === id);
-    },
     prettyTime(timeString) {
       const date = new Date(timeString);
       const diff = Math.floor(((this.now).getTime() - date.getTime()) / 1000);

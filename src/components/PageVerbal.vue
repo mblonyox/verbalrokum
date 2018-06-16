@@ -28,7 +28,7 @@
               </v-layout>
               <v-layout row>
                 <v-flex xs4><v-subheader>Konseptor</v-subheader></v-flex>
-                <v-flex xs8>{{ verbal.konseptor }}</v-flex>
+                <v-flex xs8>{{ verbal.konseptorNama }}</v-flex>
               </v-layout>
               <v-layout row>
                 <v-flex xs4><v-subheader>Nota Bagian</v-subheader></v-flex>
@@ -84,7 +84,7 @@
               </v-data-table>
             </v-tabs-content>
           </v-tabs-items>
-        </v-tabs> 
+        </v-tabs>
       </v-card-text>
     </v-card>
   </div>
