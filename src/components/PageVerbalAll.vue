@@ -20,12 +20,12 @@
                   color="teal"
                   key="cb-Direkam"
                 />
-                <v-checkbox 
+                <v-checkbox
                   v-for="item in status"
                   v-model="filterStatus"
                   :label="item.text"
                   :value="item.text"
-                  :color="item.color" 
+                  :color="item.color"
                   :key="'cb-'+item.text"
                 />
               </v-card-text>
@@ -56,14 +56,20 @@
         :filter="filterSearch"
       >
         <template slot="items" slot-scope="props">
-          <td><router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link></td>
-          <td>{{ new Date(props.item.tanggal).toLocaleDateString('id') }}</td>
-          <td>{{ props.item.bagian }}</td>
-          <td>{{ idToPegawai(props.item.konseptor).NamaLengkap }}</td>
+          <td>
+            <router-link :to="'/verbal/'+props.item['.key']">{{ props.item.nomorAgenda }}</router-link>
+            {{ new Date(props.item.tanggal).toLocaleDateString('id') }}
+          </td>
+          <td>
+            <b>Bagian {{ props.item.bagian }}</b><br>
+            {{ idToPegawai(props.item.konseptor) ? idToPegawai(props.item.konseptor).NamaLengkap : '' }}
+          </td>
           <td><span style="white-space: nowrap;">{{ props.item.notaBagian }}</span> <br> <span style="white-space: nowrap;">{{ props.item.verbBagian }}</span> </td>
           <td>{{ props.item.perihal }}</td>
-          <td><p class="nowrap">{{ prettyTime(props.item.updatedAt) }}</p></td>
-          <td><v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip></td>
+          <td>
+            <v-chip :color="props.item.status.color" text-color="white">{{ props.item.status.text }}</v-chip>
+            <p class="nowrap">{{ prettyTime(props.item.updatedAt) }}</p>
+          </td>
           <td>
             <v-btn small block v-if="props.item.status.text === 'Perbaikan'" @click.stop="printPerbaikan(props.item)">
               <v-icon>print</v-icon>
@@ -106,7 +112,7 @@
               />
               <template v-if="dialog.status && dialog.status.text === 'Arsipkan'">
                 <v-divider/>
-                Penomoran Naskah Dinas: 
+                Penomoran Naskah Dinas:
                 <v-layout row v-for="naskah in dialog.item.naskah" :key="naskah.key">
                   <v-flex xs4>
                     <v-subheader>{{ naskah.jenis }}</v-subheader>
@@ -144,14 +150,11 @@ export default {
       selected: [],
       pagination: { sortBy: null, page: 1, rowsPerPage: 25, descending: false, totalItems: 0 },
       headers: [
-        { text: 'No Agenda', value: 'nomorAgenda', align: 'center' },
-        { text: 'Tanggal', value: 'tanggal', align: 'center' },
-        { text: 'Bagian', value: 'bagian', align: 'center' },
-        { text: 'Konseptor', value: 'konseptor', align: 'center' },
-        { text: 'Nota&Verbal Bagian', align: 'center', sortable: false },
+        { text: 'No Agenda & tanggal', value: 'nomorAgenda', align: 'center' },
+        { text: 'Bagian & Konseptor', value: 'bagian', align: 'center' },
+        { text: 'Nota & Verbal Bagian', align: 'center', sortable: false },
         { text: 'Perihal', align: 'center', sortable: false },
-        { text: 'Diperbarui', value: 'updatedAt', align: 'center', sortable: true },
-        { text: 'Status', align: 'center', sortable: false },
+        { text: 'Status Terakhir', value: 'updatedAt', align: 'center', sortable: true },
         { text: 'Aksi', align: 'center', sortable: false },
       ],
       dialog: {
