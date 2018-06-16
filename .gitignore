@@ -12,3 +12,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.swp
+src/config/firebase.js
+cli/accountKey.json
