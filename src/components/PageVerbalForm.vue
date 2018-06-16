@@ -3,9 +3,9 @@
     <v-card>
       <v-layout>
         <v-flex xs10 offset-xs1>
-          <h3 v-if="editMode">Edit Verbal</h3>
-          <h3 v-else>Rekam Verbal Baru</h3>
-          <h4 v-if="editMode">Nomor Agenda : {{ verbal.nomorAgenda }}</h4>
+          <h2 v-if="editMode">Edit Verbal</h2>
+          <h2 v-else>Rekam Verbal Baru</h2>
+          <h3 v-if="editMode">Nomor Agenda : {{ verbal.nomorAgenda }}</h3>
           <v-form ref="form" v-model="valid">
             <v-menu
               lazy
@@ -269,10 +269,10 @@ export default {
       return this.$store.state.verbal.pegawai;
     },
     tujuan() {
-      return this.$store.state.verbal.tujuan.map(e => e['.value']);
+      return this.$store.state.verbal.tujuan;
     },
     labels() {
-      return this.$store.state.verbal.labels.map(e => e['.value']);
+      return this.$store.state.verbal.labels;
     },
     verbal() {
       return this.editMode ? this.$store.state.verbal.verbals.find(v => v['.key'] === this.id) : null;

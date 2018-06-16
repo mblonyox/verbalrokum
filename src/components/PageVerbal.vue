@@ -5,14 +5,11 @@
       <v-divider/>
       <v-card-text>
         <v-tabs grow>
-          <v-tabs-bar class="white">
-            <v-tabs-slider color="primary"/>
-            <v-tabs-item href="#tab-rincian">Rincian</v-tabs-item>
-            <v-tabs-item href="#tab-logs">Logs</v-tabs-item>
-            <v-tabs-item href="#tab-files">Files</v-tabs-item>
-          </v-tabs-bar>
+          <v-tab href="#tab-rincian">Rincian</v-tab>
+          <v-tab href="#tab-logs">Logs</v-tab>
+          <v-tab href="#tab-files">Files</v-tab>
           <v-tabs-items>
-            <v-tabs-content id="tab-rincian">
+            <v-tab-item id="tab-rincian">
               <br>
               <v-layout row>
                 <v-flex xs4><v-subheader>Nomor Agenda</v-subheader></v-flex>
@@ -67,8 +64,8 @@
                 <v-btn :to="{name: 'EditVerbal', params: { id: $route.params.id }}" color="cyan">Edit</v-btn>
                 <v-btn to="/verbal">Kembali</v-btn>
               </div>
-            </v-tabs-content>
-            <v-tabs-content id="tab-logs">
+            </v-tab-item>
+            <v-tab-item id="tab-logs">
               <br>
               <v-data-table
                 :headers="headers"
@@ -82,7 +79,7 @@
                   <td>{{ props.item.note }}</td>
                 </template>
               </v-data-table>
-            </v-tabs-content>
+            </v-tab-item>
           </v-tabs-items>
         </v-tabs>
       </v-card-text>

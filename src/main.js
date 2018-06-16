@@ -6,9 +6,9 @@ import firebase from 'firebase';
 import App from './App';
 import router from './router';
 import store from './store';
-import config from './firebase/config';
+import firebaseConfig from './config/firebase';
 
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged((user) => {
   store.dispatch('authChanged', user);
