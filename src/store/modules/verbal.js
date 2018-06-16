@@ -28,6 +28,12 @@ const mutations = {
   setData(state, { target, value }) {
     state[target] = value;
   },
+  addLabel(state, label) {
+    state.labels.push(label);
+  },
+  addTujuan(state, tujuan) {
+    state.tujuan.push(tujuan);
+  },
 };
 
 const getters = {
@@ -119,10 +125,16 @@ const actions = {
       .then(() => { commit('setPending', false); });
   },
   addTujuan({ commit }, tujuan) {
-    firebase.database().ref('/tujuan').push(tujuan);
+    firebase.database()
+      .ref('/tujuan')
+      .push(tujuan)
+      .then(() => { commit('addTujuan', tujuan); });
   },
   addLabel({ commit }, label) {
-    firebase.database().ref('/labels').push(label);
+    firebase.database()
+      .ref('/labels')
+      .push(label)
+      .then(() => { commit('addLabel', label); });
   },
 };
 
