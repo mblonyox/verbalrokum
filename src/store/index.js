@@ -18,5 +18,7 @@ export default new Vuex.Store({
   mutations: {
     ...firebaseMutations,
   },
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    paths: ['auth', 'app'],
+  })],
 });
