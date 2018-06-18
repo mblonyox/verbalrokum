@@ -2,15 +2,18 @@
   <div id="app">
     <router-view/>
     <app-spinner/>
+    <app-snackbar/>
   </div>
 </template>
 
 <script>
 import AppSpinner from '@/components/AppSpinner';
+import AppSnackbar from '@/components/AppSnackbar';
 
 export default {
   components: {
     AppSpinner,
+    AppSnackbar,
   },
   beforeMount() {
     const { body } = document;

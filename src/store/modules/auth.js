@@ -65,7 +65,19 @@ const actions = {
   },
   authChanged({ state, commit, dispatch }, user) {
     commit('setPending', true);
+    dispatch('showSnackbar', {
+      show: true,
+      message: 'Memerika authentikasi.',
+      color: 'info',
+      timeout: 0,
+    });
     if (!user) {
+      dispatch('showSnackbar', {
+        show: true,
+        message: 'Autentikasi gagal, silakan login.',
+        color: 'error',
+        timeout: 3000,
+      });
       commit('unsetUser');
       if (state.loggedIn) {
         commit('setLoggedIn', false);
@@ -75,6 +87,12 @@ const actions = {
     } else {
       firebase.database().ref(`/users/${user.uid}`).once('value', (snap) => {
         const userdata = snap.val();
+        dispatch('showSnackbar', {
+          show: true,
+          message: `Autentikasi berhasil, selamat datang ${userdata.displayName}.`,
+          color: 'success',
+          timeout: 3000,
+        });
         commit('setUser', { ...user, ...userdata });
         if (!state.loggedIn) {
           commit('setLoggedIn', true);

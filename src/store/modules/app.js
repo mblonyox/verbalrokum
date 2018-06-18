@@ -4,7 +4,13 @@ const state = {
     isTablet: false,
   },
   sidebar: false,
-  pending: false,
+  pending: true,
+  snackbar: {
+    show: false,
+    message: '',
+    timeout: 3000,
+    color: null,
+  },
 };
 
 const mutations = {
@@ -17,6 +23,9 @@ const mutations = {
   },
   setPending(state, isPending) {
     state.pending = isPending;
+  },
+  setSnackbar(state, snackbar) {
+    state.snackbar = snackbar;
   },
 };
 
@@ -35,6 +44,23 @@ const getters = {
 const actions = {
   toggleSidebar({ state, commit }) {
     commit('setSidebar', !state.sidebar);
+  },
+  clearSnackbar({ commit }) {
+    return new Promise((resolve) => {
+      commit('setSnackbar', {
+        show: false,
+        message: '',
+        timeout: 3000,
+        color: null,
+      });
+      resolve();
+    });
+  },
+  showSnackbar({ state, commit, dispatch }, snackbar) {
+    dispatch('clearSnackbar')
+      .then(() => {
+        commit('setSnackbar', snackbar);
+      });
   },
 };
 

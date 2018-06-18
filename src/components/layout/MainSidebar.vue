@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer disable-resize-watcher disable-route-watcher clipped app :mini-variant="miniSidebar" v-model="showSidebar">
+  <v-navigation-drawer disable-resize-watcher disable-route-watcher clipped app :mini-variant="miniSidebar" :value="showSidebar">
     <v-list class="pt-0">
       <template v-for="item in menus">
         <v-divider v-if="item === 'divider'" />
@@ -47,13 +47,8 @@ export default {
     miniSidebar() {
       return this.$store.getters.isMiniSidebar;
     },
-    showSidebar: {
-      get() {
-        return !this.$store.getters.isHiddenSidebar;
-      },
-      set(val) {
-        this.$store.commit('setSidebar', val);
-      },
+    showSidebar() {
+      return !this.$store.getters.isHiddenSidebar;
     },
   },
 };

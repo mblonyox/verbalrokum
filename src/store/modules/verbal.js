@@ -43,11 +43,17 @@ const getters = {
 };
 
 const actions = {
-  saveNewVerbal({ commit, rootState }, newVerbal) {
+  saveNewVerbal({ commit, dispatch, rootState }, newVerbal) {
     const verbalRef = firebase.database().ref('/verbals');
     const agendaRef = firebase.database().ref('/agenda');
     const currentYear = (new Date()).getFullYear();
     commit('setPending', true);
+    dispatch('showSnackbar', {
+      show: true,
+      message: 'Menyimpan verbal baru.',
+      color: 'info',
+      timeout: 0,
+    });
     verbalRef.push(newVerbal)
       .then((newRef) => {
         agendaRef.child(currentYear).transaction((ag) => {
@@ -57,7 +63,8 @@ const actions = {
           return agenda;
         })
         .then((result) => {
-          const agendaPromise = result.committed ? newRef.child('nomorAgenda').set(`Verb-${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}`) : null;
+          const nomorAgenda = result.committed ? `Verb-${result.snapshot.child('lastVal').val()}/SJ.3/${currentYear}` : undefined;
+          const agendaPromise = newRef.child('nomorAgenda').set(nomorAgenda);
           const logPromise = newRef.child('log').push({ text: 'Verbal direkam.', time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
           const updatePromise = newRef.update({
             status: { text: 'Direkam', color: 'teal' },
@@ -65,13 +72,25 @@ const actions = {
           });
           Promise.all([agendaPromise, logPromise, updatePromise]).then(() => {
             commit('setPending', false);
+            dispatch('showSnackbar', {
+              show: true,
+              message: `Verbal berhasil disimpan. Nomor Agenda: ${nomorAgenda}`,
+              color: 'success',
+              timeout: 3000,
+            });
             router.push('/verbal');
           });
         });
       });
   },
-  updateVerbalStatus({ commit, rootState }, newStatus) {
+  updateVerbalStatus({ commit, dispatch, rootState }, newStatus) {
     commit('setPending', true);
+    dispatch('showSnackbar', {
+      show: true,
+      message: 'Memperbarui status verbal.',
+      color: 'info',
+      timeout: 0,
+    });
     const verbalRef = firebase.database().ref('/verbals').child(newStatus.uid);
     const statusPromise = verbalRef.update({
       status: { text: newStatus.text, color: newStatus.color },
@@ -81,16 +100,34 @@ const actions = {
     const logPromise = verbalRef.child('log').push({ text: newStatus.logText, note: newStatus.note, time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
     Promise.all([statusPromise, logPromise]).then(() => {
       commit('setPending', false);
+      dispatch('showSnackbar', {
+        show: true,
+        message: 'Status verbal telah disimpan.',
+        color: 'success',
+        timeout: 3000,
+      });
     });
   },
-  editVerbal({ commit, state, rootState }, data) {
+  editVerbal({ commit, dispatch, rootState }, data) {
     commit('setPending', true);
+    dispatch('showSnackbar', {
+      show: true,
+      message: 'Menyimpan verbal.',
+      color: 'info',
+      timeout: 0,
+    });
     const { id, form } = data;
     const verbalRef = firebase.database().ref('/verbals').child(id);
     verbalRef.update(form)
       .then(() => {
         verbalRef.child('log').push({ text: 'Verbal diubah.', time: firebase.database.ServerValue.TIMESTAMP, user: rootState.auth.user.displayName });
         commit('setPending', false);
+        dispatch('showSnackbar', {
+          show: true,
+          message: 'Verbal berhasil disimpan.',
+          color: 'success',
+          timeout: 3000,
+        });
         router.push('/verbal');
       });
   },
@@ -112,6 +149,12 @@ const actions = {
   }),
   initFirebaseRef({ commit, dispatch }) {
     commit('setPending', true);
+    dispatch('showSnackbar', {
+      show: true,
+      message: 'Memuat data verbal',
+      color: 'info',
+      timeout: 0,
+    });
     const db = firebase.database();
     const refs = [
       { target: 'tujuan', ref: db.ref('/tujuan') },
@@ -122,7 +165,15 @@ const actions = {
     const promises = refs.map(ref => dispatch('getDataOnce', ref));
     promises.push(dispatch('setFirebaseRef', { target: 'verbals', ref: db.ref('/verbals').orderByKey() }));
     Promise.all(promises)
-      .then(() => { commit('setPending', false); });
+      .then(() => {
+        commit('setPending', false);
+        dispatch('showSnackbar', {
+          show: true,
+          message: 'Data verbal telah siap.',
+          color: 'success',
+          timeout: 3000,
+        });
+      });
   },
   addTujuan({ commit }, tujuan) {
     firebase.database()
