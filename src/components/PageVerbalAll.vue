@@ -54,6 +54,7 @@
         :rows-per-page-items="[25, 50, 100, {text: 'All', value: -1}]"
         :search="search"
         :filter="filterSearch"
+        :custom-filter="customFilter"
       >
         <template slot="items" slot-scope="props">
           <td>
@@ -265,7 +266,18 @@ export default {
     filterSearch(val, search) {
       return val !== null
         && ['undefined', 'boolean'].indexOf(typeof val) === -1
-        && (!Number.isInteger(val) && val.toString().toLowerCase().indexOf(search) !== -1);
+        && !Number.isInteger(val)
+        && val.toString().toLowerCase().indexOf(search) !== -1;
+    },
+    customFilter(items, search, filter) {
+      const props = [
+        'nomorAgenda',
+        'notaBagian',
+        'verbBagian',
+        'konseptorNama',
+        'perihal',
+      ];
+      return items.filter(item => props.some(prop => filter(item[prop], search)));
     },
   },
   directives: {
