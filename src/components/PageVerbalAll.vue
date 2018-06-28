@@ -253,7 +253,7 @@ export default {
       data.nomorAgenda = item.nomorAgenda;
       data.tanggal = new Date(item.tanggal).toLocaleDateString('id', { year: 'numeric', month: 'long', day: 'numeric' });
       data.bagian = item.bagian;
-      data.konseptor = this.idToPegawai(item.konseptor).NamaLengkap;
+      data.konseptor = item.konseptorNama;
       data.notaBag = item.notaBagian;
       data.verbBag = item.verbBagian;
       data.perihal = item.perihal;
